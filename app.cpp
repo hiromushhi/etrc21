@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "device_io.h"
+#include "etrc_info.h"
 
 #if defined(MAKE_SIM)
 static const bool kSimulator = true;
@@ -16,13 +17,19 @@ static const bool kRcourse = false;
 
 MotorIo* motor_io;
 SensorIo* sensor_io;
+Luminous* luminous;
+Localize* localize;
 
 static void initialize() {
   motor_io = new MotorIo();
   sensor_io = new SensorIo();
+  luminous = new Luminous(sensor_io);
+  localize = new Localize(motor_io);
 }
 
 static void finalize() {
+  delete localize;
+  delete luminous;
   delete sensor_io;
   delete motor_io;
 }
@@ -59,5 +66,9 @@ void exec_action_task(intptr_t unused) {
 }
 
 void update_info_task(intptr_t unused) {
+  motor_io->Update();
+  sensor_io->Update();
+  luminous->Update();
+  localize->Update();
   ext_tsk();
 }
