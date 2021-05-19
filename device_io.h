@@ -11,6 +11,9 @@ class MotorIo {
 
   int32_t counts_r_;
   int32_t counts_l_;
+
+ private:
+  void ResetCounts();
 };
 
 class SensorIo {
