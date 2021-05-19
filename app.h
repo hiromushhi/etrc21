@@ -13,6 +13,7 @@ extern "C" {
 
 #ifndef TOPPERS_MACRO_ONLY
 extern void main_task(intptr_t exinf);
+extern void exec_action_task(intptr_t exinf);
 #endif
 
 #ifdef __cplusplus
