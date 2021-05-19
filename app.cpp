@@ -29,6 +29,16 @@ static void finalize() {
 
 void main_task(intptr_t unused) {
   initialize();
+
+  sta_cyc(UPDATE_INFO_CYC);
+
+  while (true) {
+    if (sensor_io->touch_pressed_) {
+      break;
+    }
+    tslp_tsk(10*1000U);
+  }
+
   sta_cyc(EXEC_ACTION_CYC);
 
   while (true) {
@@ -39,10 +49,15 @@ void main_task(intptr_t unused) {
   }
 
   stp_cyc(EXEC_ACTION_CYC);
+  stp_cyc(UPDATE_INFO_CYC);
   finalize();
   ext_tsk();
 }
 
 void exec_action_task(intptr_t unused) {
+  ext_tsk();
+}
+
+void update_info_task(intptr_t unused) {
   ext_tsk();
 }
