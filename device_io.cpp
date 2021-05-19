@@ -1,6 +1,6 @@
 #include "device_io.h"
 
-MotorIo::MotorIo() {
+MotorIo::MotorIo() : counts_r_(0), counts_l_(0) {
   ev3_motor_config(EV3_PORT_B, LARGE_MOTOR);
   ev3_motor_config(EV3_PORT_C, LARGE_MOTOR);
 }
@@ -13,7 +13,7 @@ void MotorIo::Update() {
   counts_l_ = ev3_motor_get_counts(EV3_PORT_C);
 }
 
-SensorIo::SensorIo() {
+SensorIo::SensorIo() : touch_pressed_(false), color_rgb_raw_({0, 0, 0}) {
   ev3_sensor_config(EV3_PORT_1, TOUCH_SENSOR);
   ev3_sensor_config(EV3_PORT_2, COLOR_SENSOR);
 }
