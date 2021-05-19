@@ -1,5 +1,7 @@
 #include "app.h"
 
+#include "device_io.h"
+
 #if defined(MAKE_SIM)
 static const bool kSimulator = true;
 #else
@@ -12,10 +14,17 @@ static const bool kRcourse = true;
 static const bool kRcourse = false;
 #endif
 
+MotorIo* motor_io;
+SensorIo* sensor_io;
+
 static void initialize() {
+  motor_io = new MotorIo();
+  sensor_io = new SensorIo();
 }
 
 static void finalize() {
+  delete sensor_io;
+  delete motor_io;
 }
 
 void main_task(intptr_t unused) {
