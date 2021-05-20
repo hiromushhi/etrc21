@@ -52,7 +52,7 @@ void main_task(intptr_t unused) {
   sta_cyc(EXEC_ACTION_CYC);
 
   while (true) {
-    if (ev3_button_is_pressed(BACK_BUTTON)) {
+    if (sensor_io->back_button_pressed_) {
       break;
     }
     tslp_tsk(100*1000U);
