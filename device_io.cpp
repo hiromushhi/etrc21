@@ -14,6 +14,11 @@ void MotorIo::Update() {
   counts_l_ = ev3_motor_get_counts(EV3_PORT_C);
 }
 
+void MotorIo::SetWheelsPower(int8_t power_l, int8_t power_r) {
+  ev3_motor_set_power(EV3_PORT_B, power_r);
+  ev3_motor_set_power(EV3_PORT_C, power_l);
+}
+
 void MotorIo::ResetCounts() {
   ev3_motor_reset_counts(EV3_PORT_B);
   ev3_motor_reset_counts(EV3_PORT_C);

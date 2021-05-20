@@ -8,6 +8,7 @@ class MotorIo {
   MotorIo();
   ~MotorIo();
   void Update();
+  void SetWheelsPower(int8_t power_l, int8_t power_r);
 
   int32_t counts_r_;
   int32_t counts_l_;
