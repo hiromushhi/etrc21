@@ -11,6 +11,9 @@ extern "C" {
 #define STACK_SIZE 4096
 #endif
 
+#define EXEC_ACTION_DT_MS 10
+#define UPDATE_INFO_DT_MS 10
+
 #ifndef TOPPERS_MACRO_ONLY
 extern void main_task(intptr_t exinf);
 extern void exec_action_task(intptr_t exinf);
