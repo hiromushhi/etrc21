@@ -34,4 +34,15 @@ class Localize {
   float dtheta_th_;  // dthetaが十分小さいか判定する閾値
 };
 
+class SpeedMeter {
+ public:
+  SpeedMeter(Localize* localize);
+  void Update();
+  float speed_;
+
+ private:
+  Localize* localize_;
+  float dt_;
+};
+
 #endif  // ETRC21_ETRC_INFO_H_

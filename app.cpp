@@ -19,15 +19,18 @@ MotorIo* motor_io;
 SensorIo* sensor_io;
 Luminous* luminous;
 Localize* localize;
+SpeedMeter* speed_meter;
 
 static void initialize() {
   motor_io = new MotorIo();
   sensor_io = new SensorIo();
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
+  speed_meter = new SpeedMeter(localize);
 }
 
 static void finalize() {
+  delete speed_meter;
   delete localize;
   delete luminous;
   delete sensor_io;
@@ -70,5 +73,6 @@ void update_info_task(intptr_t unused) {
   sensor_io->Update();
   luminous->Update();
   localize->Update();
+  speed_meter->Update();
   ext_tsk();
 }

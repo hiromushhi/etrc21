@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include "app.h"
+
 Luminous::Luminous(SensorIo* sensor_io)
     : color_(kNone), hsv_({0, 0, 0}), sensor_io_(sensor_io) {
   SetColorReference(kGreen, (Hsv){120, 0, 0});
@@ -132,4 +134,17 @@ void Localize::Update() {
   prev_counts_r_ = counts_r;
 
   distance_ = ((counts_l + counts_r) / 2.0) * M_PI / 180 * radius_;
+}
+
+SpeedMeter::SpeedMeter(Localize* localize)
+    : speed_(0), localize_(localize), dt_(UPDATE_INFO_DT_MS/1000.0) {
+}
+
+void SpeedMeter::Update() {
+  static float prev_distance = 0;
+
+  float distance = localize_->distance_;
+  speed_ = (distance - prev_distance) / dt_;
+
+  prev_distance = distance;
 }
