@@ -9,6 +9,7 @@ class MotorIo {
   ~MotorIo();
   void Update();
   void SetWheelsPower(int8_t power_l, int8_t power_r);
+  void StopWheels(bool brake);
 
   int32_t counts_r_;
   int32_t counts_l_;
