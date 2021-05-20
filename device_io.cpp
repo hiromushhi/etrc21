@@ -31,7 +31,7 @@ void MotorIo::ResetCounts() {
 }
 
 SensorIo::SensorIo()
-    : touch_pressed_(false), back_button_pressed_(false), color_rgb_raw_({0, 0, 0}) {
+    : touch_sensor_pressed_(false), back_button_pressed_(false), color_rgb_raw_({0, 0, 0}) {
   ev3_sensor_config(EV3_PORT_1, TOUCH_SENSOR);
   ev3_sensor_config(EV3_PORT_2, COLOR_SENSOR);
 }
@@ -40,7 +40,7 @@ SensorIo::~SensorIo() {
 }
 
 void SensorIo::Update() {
-  touch_pressed_ = ev3_touch_sensor_is_pressed(EV3_PORT_1);
+  touch_sensor_pressed_ = ev3_touch_sensor_is_pressed(EV3_PORT_1);
   back_button_pressed_ = ev3_button_is_pressed(BACK_BUTTON);
   ev3_color_sensor_get_rgb_raw(EV3_PORT_2, &color_rgb_raw_);
 }

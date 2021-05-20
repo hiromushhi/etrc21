@@ -43,7 +43,7 @@ void main_task(intptr_t unused) {
   sta_cyc(UPDATE_INFO_CYC);
 
   while (true) {
-    if (sensor_io->touch_pressed_) {
+    if (sensor_io->touch_sensor_pressed_) {
       break;
     }
     tslp_tsk(10*1000U);

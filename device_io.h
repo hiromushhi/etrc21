@@ -24,7 +24,7 @@ class SensorIo {
   ~SensorIo();
   void Update();
 
-  bool touch_pressed_;
+  bool touch_sensor_pressed_;
   bool back_button_pressed_;
   rgb_raw_t color_rgb_raw_;
 };
