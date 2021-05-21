@@ -16,7 +16,21 @@ void MotorIo::Update() {
 }
 
 void MotorIo::SetWheelsPower(int8_t power_l, int8_t power_r) {
+  const int8_t kUpperLimit = 100;
+  const int8_t kLowerLimit = -100;
+
+  if (power_r > kUpperLimit) {
+    power_r = kUpperLimit;
+  } else if (power_r < kLowerLimit) {
+    power_r = kLowerLimit;
+  }
   ev3_motor_set_power(EV3_PORT_B, power_r);
+
+  if (power_l > kUpperLimit) {
+    power_l = kUpperLimit;
+  } else if (power_l < kLowerLimit) {
+    power_l = kLowerLimit;
+  }
   ev3_motor_set_power(EV3_PORT_C, power_l);
 }
 
