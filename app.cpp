@@ -22,6 +22,7 @@ Luminous* luminous;
 Localize* localize;
 SpeedMeter* speed_meter;
 WheelsControl* wheels_control;
+RlineTracer* rline_tracer;
 
 static void initialize() {
   motor_io = new MotorIo();
@@ -30,9 +31,11 @@ static void initialize() {
   localize = new Localize(motor_io);
   speed_meter = new SpeedMeter(localize);
   wheels_control = new WheelsControl(motor_io);
+  rline_tracer = new RlineTracer(wheels_control, luminous);
 }
 
 static void finalize() {
+  delete rline_tracer;
   delete wheels_control;
   delete speed_meter;
   delete localize;

@@ -24,4 +24,13 @@ struct Pose {
   float theta;
 };
 
+struct RlineTraceParam {
+  bool left_edge;
+  int8_t std_power;
+  float value_ref;
+  float kp;
+  float ki;
+  float kd;
+};
+
 #endif  // ETRC21_INFO_TYPE_H_

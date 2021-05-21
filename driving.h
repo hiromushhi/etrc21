@@ -2,6 +2,8 @@
 #define ETRC21_DRIVING_H_
 
 #include "device_io.h"
+#include "etrc_info.h"
+#include "utils.h"
 
 class WheelsControl {
  public:
@@ -10,6 +12,22 @@ class WheelsControl {
 
  private:
   MotorIo* motor_io_;
+};
+
+class RlineTracer {
+ public:
+  RlineTracer(WheelsControl* wheels_control, Luminous* luminous);
+  ~RlineTracer();
+  void SetParam(RlineTraceParam param);
+  void Run();
+
+ private:
+  WheelsControl* wheels_control_;
+  Luminous* luminous_;
+  bool left_edge_;
+  int8_t std_power_;
+  float value_ref_;
+  PidControl* pid_control_;
 };
 
 #endif  // ETRC21_DRIVING_H_
