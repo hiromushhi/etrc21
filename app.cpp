@@ -2,6 +2,7 @@
 
 #include "device_io.h"
 #include "etrc_info.h"
+#include "driving.h"
 
 #if defined(MAKE_SIM)
 static const bool kSimulator = true;
@@ -20,6 +21,7 @@ SensorIo* sensor_io;
 Luminous* luminous;
 Localize* localize;
 SpeedMeter* speed_meter;
+WheelsControl* wheels_control;
 
 static void initialize() {
   motor_io = new MotorIo();
@@ -27,9 +29,11 @@ static void initialize() {
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
   speed_meter = new SpeedMeter(localize);
+  wheels_control = new WheelsControl(motor_io);
 }
 
 static void finalize() {
+  delete wheels_control;
   delete speed_meter;
   delete localize;
   delete luminous;
