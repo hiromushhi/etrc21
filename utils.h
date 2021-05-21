@@ -5,9 +5,9 @@
 
 class PidControl {
  public:
-  PidControl(float kp, float ki, float kd);
+  PidControl();
   void SetGain(float kp, float ki, float kd);
-  float GetMv(int32_t current_val, int32_t target_val);
+  float GetMv(int32_t target_val, int32_t current_val);
 
  private:
   float kp_;
