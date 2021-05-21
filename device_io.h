@@ -13,6 +13,8 @@ class MotorIo {
 
   int32_t counts_r_;
   int32_t counts_l_;
+  int8_t power_r;
+  int8_t power_l;
 
  private:
   void ResetCounts();

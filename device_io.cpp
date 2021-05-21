@@ -13,6 +13,9 @@ MotorIo::~MotorIo() {
 void MotorIo::Update() {
   counts_r_ = ev3_motor_get_counts(EV3_PORT_B);
   counts_l_ = ev3_motor_get_counts(EV3_PORT_C);
+
+  power_r = static_cast<int8_t>(ev3_motor_get_power(EV3_PORT_B));
+  power_l = static_cast<int8_t>(ev3_motor_get_power(EV3_PORT_C));
 }
 
 void MotorIo::SetWheelsPower(int8_t power_l, int8_t power_r) {
