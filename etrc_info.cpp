@@ -101,7 +101,7 @@ void Luminous::UpdateColor() {
 
 Localize::Localize(MotorIo* motor_io)
     : pose_({0, 0, 0}), distance_(0), motor_io_(motor_io),
-      radius_ (45), tread_(140), dtheta_th_ (0.001) {
+      radius_(45), tread_(140), dtheta_th_(0.001) {
 }
 
 void Localize::Update() {
