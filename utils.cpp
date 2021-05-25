@@ -13,7 +13,7 @@ void PidControl::SetGain(float kp, float ki, float kd) {
   kd_ = kd;
 }
 
-float PidControl::GetMv(int32_t target_val, int32_t current_val) {
+float PidControl::GetMv(float target_val, float current_val) {
   float p, i, d, mv;
 
   diff0_ = diff1_;
