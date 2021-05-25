@@ -24,7 +24,7 @@ struct Pose {
   float theta;
 };
 
-struct RlineTraceParam {
+struct TraceParam {
   bool left_edge;
   int8_t std_power;
   float value_ref;

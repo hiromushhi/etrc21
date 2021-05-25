@@ -18,7 +18,7 @@ class RlineTracer {
  public:
   RlineTracer(WheelsControl* wheels_control, Luminous* luminous);
   ~RlineTracer();
-  void SetParam(RlineTraceParam param);
+  void SetParam(TraceParam param);
   void Run();
 
  private:

@@ -32,7 +32,7 @@ RlineTracer::~RlineTracer() {
   delete pid_control_;
 }
 
-void RlineTracer::SetParam(RlineTraceParam param) {
+void RlineTracer::SetParam(TraceParam param) {
   left_edge_ = param.left_edge;
   std_power_ = param.std_power;
   value_ref_ = param.value_ref;
