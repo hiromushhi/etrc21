@@ -42,4 +42,8 @@ struct TraceParam {
   float kd;
 };
 
+struct EndParam {
+  Color color;
+};
+
 #endif  // ETRC21_INFO_TYPE_H_

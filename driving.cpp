@@ -50,3 +50,24 @@ void RlineTracer::Run() {
 
   wheels_control_->Exec(power_l, power_r);
 }
+
+void RlineTracer::Stop() {
+  wheels_control_->Exec(0, 0);
+}
+
+EndCondition::EndCondition(Luminous* luminous, Localize* localize)
+    : luminous_(luminous), localize_(localize),
+      end_color_(kNone), end_state_(false) {
+}
+
+void EndCondition::SetParam(EndParam param) {
+  end_color_ = param.color;
+  end_state_ = false;
+}
+
+bool EndCondition::IsSatisfied() {
+  if (end_color_ == luminous_->color_) {
+    end_state_ = true;
+  }
+  return end_state_;
+}
