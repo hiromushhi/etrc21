@@ -28,8 +28,8 @@ enum Trace {
   kRlineLeft = 0,
   kRlineRight,
   kVlineForward,
-  kVlineBack,
-  kVlineRotate,
+  kVlineBackward,
+  kVlineRotation,
   kTraceNum
 };
 

@@ -42,6 +42,10 @@ class VlineTracer {
  private:
   WheelsControl* wheels_control_;
   Localize* localize_;
+  Trace trace_type_;
+  int8_t std_power_;
+  float value_ref_;
+  PidControl* pid_control_;
 };
 
 class EndCondition {

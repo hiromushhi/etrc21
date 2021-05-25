@@ -56,19 +56,42 @@ void RlineTracer::Stop() {
 }
 
 VlineTracer::VlineTracer(WheelsControl* wheels_control, Localize* localize)
-    : wheels_control_(wheels_control), localize_(localize) {
+    : wheels_control_(wheels_control), localize_(localize),
+      trace_type_(kVlineForward), std_power_(0), value_ref_(0) {
+  pid_control_ = new PidControl();
 }
 
 VlineTracer::~VlineTracer() {
+  delete pid_control_;
 }
 
 void VlineTracer::SetParam(TraceParam param) {
+  trace_type_ = param.trace_type;
+  std_power_ = param.std_power;
+  value_ref_ = param.value_ref;
+  pid_control_->SetGain(param.kp, param.ki, param.kd);
 }
 
 void VlineTracer::Run() {
+  int8_t power_l;
+  int8_t power_r;
+
+  if (trace_type_ == kVlineForward) {
+    power_l = power_r = std_power_;
+  } else if (trace_type_ == kVlineBackward) {
+    power_l = power_r = -std_power_;
+  } else if (trace_type_ == kVlineRotation) {
+    power_l = std_power_;
+    power_r = -std_power_;
+  } else {
+    power_l = power_r = 0;
+  }
+
+  wheels_control_->Exec(power_l, power_r);
 }
 
 void VlineTracer::Stop() {
+  wheels_control_->Exec(0, 0);
 }
 
 EndCondition::EndCondition(Luminous* luminous, Localize* localize)
