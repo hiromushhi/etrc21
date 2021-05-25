@@ -80,7 +80,10 @@ void VlineTracer::Run() {
     power_l = power_r = std_power_;
   } else if (trace_type_ == kVlineBackward) {
     power_l = power_r = -std_power_;
-  } else if (trace_type_ == kVlineRotation) {
+  } else if (trace_type_ == kVlineLeftRotation) {
+    power_l = -std_power_;
+    power_r = std_power_;
+  } else if (trace_type_ == kVlineRightRotation) {
     power_l = std_power_;
     power_r = -std_power_;
   } else {
