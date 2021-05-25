@@ -4,8 +4,8 @@ WheelsControl::WheelsControl(MotorIo* motor_io) : motor_io_(motor_io) {
 }
 
 void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
-  int8_t curr_power_l = motor_io_->power_l;
-  int8_t curr_power_r = motor_io_->power_r;
+  int8_t curr_power_l = motor_io_->power_l_;
+  int8_t curr_power_r = motor_io_->power_r_;
 
   if (target_power_l > curr_power_l) {
     curr_power_l += 1;
