@@ -24,8 +24,17 @@ struct Pose {
   float theta;
 };
 
+enum Trace {
+  kRlineLeft = 0,
+  kRlineRight,
+  kVlineForward,
+  kVlineBack,
+  kVlineRotate,
+  kTraceNum
+};
+
 struct TraceParam {
-  bool left_edge;
+  Trace trace_type;
   int8_t std_power;
   float value_ref;
   float kp;

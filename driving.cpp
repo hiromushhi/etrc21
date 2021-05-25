@@ -24,7 +24,7 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
 
 RlineTracer::RlineTracer(WheelsControl* wheels_control, Luminous* luminous)
     : wheels_control_(wheels_control), luminous_(luminous),
-      left_edge_(true), std_power_(0), value_ref_(0) {
+      trace_type_(kRlineLeft), std_power_(0), value_ref_(0) {
   pid_control_ = new PidControl();
 }
 
@@ -33,7 +33,7 @@ RlineTracer::~RlineTracer() {
 }
 
 void RlineTracer::SetParam(TraceParam param) {
-  left_edge_ = param.left_edge;
+  trace_type_ = param.trace_type;
   std_power_ = param.std_power;
   value_ref_ = param.value_ref;
   pid_control_->SetGain(param.kp, param.ki, param.kd);
@@ -42,7 +42,7 @@ void RlineTracer::SetParam(TraceParam param) {
 void RlineTracer::Run() {
   float mv = pid_control_->GetMv(value_ref_, luminous_->hsv_.v);
 
-  if (left_edge_) {
+  if (trace_type_ == kRlineLeft) {
     mv *= -1;
   }
   int8_t power_l = static_cast<int8_t>(std_power_ + mv);

@@ -24,7 +24,7 @@ class RlineTracer {
  private:
   WheelsControl* wheels_control_;
   Luminous* luminous_;
-  bool left_edge_;
+  Trace trace_type_;
   int8_t std_power_;
   float value_ref_;
   PidControl* pid_control_;
