@@ -55,6 +55,22 @@ void RlineTracer::Stop() {
   wheels_control_->Exec(0, 0);
 }
 
+VlineTracer::VlineTracer(WheelsControl* wheels_control, Localize* localize)
+    : wheels_control_(wheels_control), localize_(localize) {
+}
+
+VlineTracer::~VlineTracer() {
+}
+
+void VlineTracer::SetParam(TraceParam param) {
+}
+
+void VlineTracer::Run() {
+}
+
+void VlineTracer::Stop() {
+}
+
 EndCondition::EndCondition(Luminous* luminous, Localize* localize)
     : luminous_(luminous), localize_(localize),
       end_color_(kNone), end_state_(false) {

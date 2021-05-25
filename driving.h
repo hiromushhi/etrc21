@@ -31,6 +31,19 @@ class RlineTracer {
   PidControl* pid_control_;
 };
 
+class VlineTracer {
+ public:
+  VlineTracer(WheelsControl* wheels_control, Localize* localize);
+  ~VlineTracer();
+  void SetParam(TraceParam param);
+  void Run();
+  void Stop();
+
+ private:
+  WheelsControl* wheels_control_;
+  Localize* localize_;
+};
+
 class EndCondition {
  public:
   EndCondition(Luminous* luminous, Localize* localize);

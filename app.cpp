@@ -23,6 +23,7 @@ Localize* localize;
 SpeedMeter* speed_meter;
 WheelsControl* wheels_control;
 RlineTracer* rline_tracer;
+VlineTracer* vline_tracer;
 EndCondition* end_condition;
 
 static void initialize() {
@@ -33,11 +34,13 @@ static void initialize() {
   speed_meter = new SpeedMeter(localize);
   wheels_control = new WheelsControl(motor_io);
   rline_tracer = new RlineTracer(wheels_control, luminous);
+  vline_tracer = new VlineTracer(wheels_control, localize);
   end_condition = new EndCondition(luminous, localize);
 }
 
 static void finalize() {
   delete end_condition;
+  delete vline_tracer;
   delete rline_tracer;
   delete wheels_control;
   delete speed_meter;
