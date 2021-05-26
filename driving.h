@@ -61,4 +61,14 @@ class EndCondition {
   bool end_state_;
 };
 
+class DrivingManager {
+ public:
+  DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
+
+ private:
+  RlineTracer* rline_tracer_;
+  VlineTracer* vline_tracer_;
+  EndCondition* end_condition_;
+};
+
 #endif  // ETRC21_DRIVING_H_

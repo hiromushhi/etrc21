@@ -25,6 +25,7 @@ WheelsControl* wheels_control;
 RlineTracer* rline_tracer;
 VlineTracer* vline_tracer;
 EndCondition* end_condition;
+DrivingManager* driving_manager;
 
 static void initialize() {
   motor_io = new MotorIo();
@@ -36,9 +37,11 @@ static void initialize() {
   rline_tracer = new RlineTracer(wheels_control, luminous);
   vline_tracer = new VlineTracer(wheels_control, localize);
   end_condition = new EndCondition(luminous, localize);
+  driving_manager = new DrivingManager(rline_tracer, vline_tracer, end_condition);
 }
 
 static void finalize() {
+  delete driving_manager;
   delete end_condition;
   delete vline_tracer;
   delete rline_tracer;

@@ -113,3 +113,7 @@ bool EndCondition::IsSatisfied() {
   }
   return end_state_;
 }
+
+DrivingManager::DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition)
+    : rline_tracer_(rline_tracer), vline_tracer_(vline_tracer), end_condition_(end_condition) {
+}
