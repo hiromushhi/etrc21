@@ -95,11 +95,12 @@ void VlineTracer::Stop() {
 
 EndCondition::EndCondition(Luminous* luminous, Localize* localize)
     : luminous_(luminous), localize_(localize),
-      end_color_(kNone), end_state_(false) {
+      end_type_(kIvalidEnd), end_color_(kInvalidColor), end_state_(false) {
 }
 
-void EndCondition::SetParam(EndParam param) {
-  end_color_ = param.color;
+void EndCondition::SetParam(End end_type, Color end_color) {
+  end_type_ = end_type;
+  end_color_ = end_color;
   end_state_ = false;
 }
 
@@ -115,5 +116,86 @@ DrivingManager::DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tra
 }
 
 void DrivingManager::Update() {
+  if (driving_params_.empty()) {
+    vline_tracer_->Stop();
+    return;
+  }
 
+  curr_param_ = driving_params_.front();
+  if (!curr_param_.is_started) {
+    SetTracerParam();
+    SetEndParam();
+    curr_param_.is_started = true;
+  }
+
+  DriveTracer();
+  if (EndConditionSatisfied()) {
+    curr_param_.is_finished = true;
+  }
+
+  if (curr_param_.is_finished) {
+    driving_params_.pop_front();
+  }
+}
+
+void DrivingManager::AddDrivingParam(DrivingParam param) {
+  driving_params_.push_back(param);
+}
+
+void DrivingManager::SetTracerParam() {
+  Trace trace_type = curr_param_.trace_type;
+  int8_t std_power = curr_param_.std_power;
+  float value_ref = curr_param_.value_ref;
+  float kp = curr_param_.kp;
+  float ki = curr_param_.ki;
+  float kd = curr_param_.kd;
+
+  switch (trace_type) {
+    case kRlineLeft:
+    case kRlineRight:
+      rline_tracer_->SetParam(trace_type, std_power, value_ref, kp, ki, kd);
+      break;
+
+    case kVlineForward:
+    case kVlineBackward:
+    case kVlineLeftRotation:
+    case kVlineRightRotation:
+      vline_tracer_->SetParam(trace_type, std_power);
+      break;
+
+    default:
+      break;
+  }
+}
+
+void DrivingManager::SetEndParam() {
+  End end_type = curr_param_.end_type;
+  Color end_color = curr_param_.end_color;
+
+  end_condition_->SetParam(end_type, end_color);
+}
+
+void DrivingManager::DriveTracer() {
+  Trace trace_type = curr_param_.trace_type;
+
+  switch (trace_type) {
+    case kRlineLeft:
+    case kRlineRight:
+      rline_tracer_->Run();
+      break;
+
+    case kVlineForward:
+    case kVlineBackward:
+    case kVlineLeftRotation:
+    case kVlineRightRotation:
+      vline_tracer_->Run();
+      break;
+
+    default:
+      break;
+  }
+}
+
+bool DrivingManager::EndConditionSatisfied() {
+  return end_condition_->IsSatisfied();
 }

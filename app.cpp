@@ -81,7 +81,6 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
-  driving_manager->Update();
   ext_tsk();
 }
 

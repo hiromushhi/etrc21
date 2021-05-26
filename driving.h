@@ -5,6 +5,8 @@
 #include "etrc_info.h"
 #include "utils.h"
 
+#include <list>
+
 class WheelsControl {
  public:
   WheelsControl(MotorIo* motor_io);
@@ -49,12 +51,13 @@ class VlineTracer {
 class EndCondition {
  public:
   EndCondition(Luminous* luminous, Localize* localize);
-  void SetParam(EndParam param);
+  void SetParam(End end_type, Color end_color);
   bool IsSatisfied();
 
  private:
   Luminous* luminous_;
   Localize* localize_;
+  End end_type_;
   Color end_color_;
   bool end_state_;
 };
@@ -63,11 +66,18 @@ class DrivingManager {
  public:
   DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
   void Update();
+  void AddDrivingParam(DrivingParam param);
 
  private:
+  void SetTracerParam();
+  void SetEndParam();
+  void DriveTracer();
+  bool EndConditionSatisfied();
   RlineTracer* rline_tracer_;
   VlineTracer* vline_tracer_;
   EndCondition* end_condition_;
+  std::list<DrivingParam> driving_params_;
+  DrivingParam curr_param_;
 };
 
 #endif  // ETRC21_DRIVING_H_

@@ -5,14 +5,14 @@
 #include "app.h"
 
 Luminous::Luminous(SensorIo* sensor_io)
-    : color_(kNone), hsv_({0, 0, 0}), sensor_io_(sensor_io) {
+    : color_(kInvalidColor), hsv_({0, 0, 0}), sensor_io_(sensor_io) {
   SetColorReference(kGreen, (Hsv){120, 0, 0});
   SetColorReference(kBlack, (Hsv){0, 0, 0});
   SetColorReference(kRed, (Hsv){0, 0, 0});
   SetColorReference(kYellow, (Hsv){50, 0, 0});
   SetColorReference(kBlue, (Hsv){210, 0, 0});
   SetColorReference(kWhite, (Hsv){0, 20, 0});
-  SetColorReference(kNone, (Hsv){0, 0, 0});
+  SetColorReference(kInvalidColor, (Hsv){0, 0, 0});
 }
 
 void Luminous::Update() {
@@ -94,7 +94,7 @@ void Luminous::UpdateColor() {
     } else if (hue_yellow - 20 < hsv_.h && hsv_.h < hue_yellow + 20) {
       color_ = kYellow;
     } else {
-      color_ = kNone;
+      color_ = kInvalidColor;
     }
   }
 }

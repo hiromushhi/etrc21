@@ -14,7 +14,7 @@ enum Color {
   kYellow,
   kBlue,
   kWhite,
-  kNone,
+  kInvalidColor,
   kColorNum
 };
 
@@ -35,6 +35,13 @@ enum Trace {
   kTraceNum
 };
 
+enum End {
+  kColorEnd = 0,
+  kDistanceEnd,
+  kIvalidEnd,
+  kEndNum
+};
+
 struct DrivingParam {
   Trace trace_type;
   int8_t std_power;
@@ -42,10 +49,10 @@ struct DrivingParam {
   float kp;
   float ki;
   float kd;
-};
-
-struct EndParam {
-  Color color;
+  End end_type;
+  Color end_color;
+  bool is_started;
+  bool is_finished;
 };
 
 #endif  // ETRC21_INFO_TYPE_H_
