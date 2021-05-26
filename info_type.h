@@ -31,10 +31,11 @@ enum Trace {
   kVlineBackward,
   kVlineLeftRotation,
   kVlineRightRotation,
+  kInvalidTrace,
   kTraceNum
 };
 
-struct TraceParam {
+struct DrivingParam {
   Trace trace_type;
   int8_t std_power;
   float value_ref;

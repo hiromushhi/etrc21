@@ -18,7 +18,7 @@ class RlineTracer {
  public:
   RlineTracer(WheelsControl* wheels_control, Luminous* luminous);
   ~RlineTracer();
-  void SetParam(TraceParam param);
+  void SetParam(Trace trace_type, int8_t std_power, float value_ref, float kp, float ki, float kd);
   void Run();
   void Stop();
 
@@ -33,9 +33,9 @@ class RlineTracer {
 
 class VlineTracer {
  public:
-  VlineTracer(WheelsControl* wheels_control, Localize* localize);
+  VlineTracer(WheelsControl* wheels_control);
   ~VlineTracer();
-  void SetParam(TraceParam param);
+  void SetParam(Trace trace_type, int8_t std_power);
   void Run();
   void Stop();
 
@@ -44,8 +44,6 @@ class VlineTracer {
   Localize* localize_;
   Trace trace_type_;
   int8_t std_power_;
-  float value_ref_;
-  PidControl* pid_control_;
 };
 
 class EndCondition {
@@ -64,6 +62,7 @@ class EndCondition {
 class DrivingManager {
  public:
   DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
+  void Update();
 
  private:
   RlineTracer* rline_tracer_;

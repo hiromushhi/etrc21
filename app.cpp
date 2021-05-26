@@ -35,7 +35,7 @@ static void initialize() {
   speed_meter = new SpeedMeter(localize);
   wheels_control = new WheelsControl(motor_io);
   rline_tracer = new RlineTracer(wheels_control, luminous);
-  vline_tracer = new VlineTracer(wheels_control, localize);
+  vline_tracer = new VlineTracer(wheels_control);
   end_condition = new EndCondition(luminous, localize);
   driving_manager = new DrivingManager(rline_tracer, vline_tracer, end_condition);
 }
@@ -81,6 +81,7 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
+  driving_manager->Update();
   ext_tsk();
 }
 

@@ -32,11 +32,11 @@ RlineTracer::~RlineTracer() {
   delete pid_control_;
 }
 
-void RlineTracer::SetParam(TraceParam param) {
-  trace_type_ = param.trace_type;
-  std_power_ = param.std_power;
-  value_ref_ = param.value_ref;
-  pid_control_->SetGain(param.kp, param.ki, param.kd);
+void RlineTracer::SetParam(Trace trace_type, int8_t std_power, float value_ref, float kp, float ki, float kd) {
+  trace_type_ = trace_type;
+  std_power_ = std_power;
+  value_ref_ = value_ref;
+  pid_control_->SetGain(kp, ki, kd);
 }
 
 void RlineTracer::Run() {
@@ -55,21 +55,17 @@ void RlineTracer::Stop() {
   wheels_control_->Exec(0, 0);
 }
 
-VlineTracer::VlineTracer(WheelsControl* wheels_control, Localize* localize)
-    : wheels_control_(wheels_control), localize_(localize),
-      trace_type_(kVlineForward), std_power_(0), value_ref_(0) {
-  pid_control_ = new PidControl();
+VlineTracer::VlineTracer(WheelsControl* wheels_control)
+    : wheels_control_(wheels_control),
+      trace_type_(kInvalidTrace), std_power_(0) {
 }
 
 VlineTracer::~VlineTracer() {
-  delete pid_control_;
 }
 
-void VlineTracer::SetParam(TraceParam param) {
-  trace_type_ = param.trace_type;
-  std_power_ = param.std_power;
-  value_ref_ = param.value_ref;
-  pid_control_->SetGain(param.kp, param.ki, param.kd);
+void VlineTracer::SetParam(Trace trace_type, int8_t std_power) {
+  trace_type_ = trace_type;
+  std_power_ = std_power;
 }
 
 void VlineTracer::Run() {
@@ -116,4 +112,8 @@ bool EndCondition::IsSatisfied() {
 
 DrivingManager::DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition)
     : rline_tracer_(rline_tracer), vline_tracer_(vline_tracer), end_condition_(end_condition) {
+}
+
+void DrivingManager::Update() {
+
 }
