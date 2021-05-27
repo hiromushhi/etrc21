@@ -51,7 +51,7 @@ class VlineTracer {
 class EndCondition {
  public:
   EndCondition(Luminous* luminous, Localize* localize);
-  void SetParam(End end_type, Color end_color, float end_distance, float end_theta);
+  void SetParam(End end_type, Color end_color, float end_threshold);
   bool IsSatisfied();
 
  private:
@@ -59,8 +59,7 @@ class EndCondition {
   Localize* localize_;
   End end_type_;
   Color end_color_;
-  float end_distance_;
-  float end_theta_;
+  float end_threshold_;
   bool end_state_;
   float ref_distance_;
   float ref_theta_;
@@ -76,7 +75,6 @@ class DrivingManager {
   void SetTracerParam(DrivingParam& param);
   void SetEndParam(DrivingParam& param);
   void DriveTracer(DrivingParam& param);
-  bool EndConditionSatisfied();
   RlineTracer* rline_tracer_;
   VlineTracer* vline_tracer_;
   EndCondition* end_condition_;

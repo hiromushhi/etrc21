@@ -95,15 +95,14 @@ void VlineTracer::Stop() {
 
 EndCondition::EndCondition(Luminous* luminous, Localize* localize)
     : luminous_(luminous), localize_(localize),
-      end_type_(kIvalidEnd), end_color_(kInvalidColor), end_distance_(0),
+      end_type_(kIvalidEnd), end_color_(kInvalidColor), end_threshold_(0),
       end_state_(false), ref_distance_(0), ref_theta_(0) {
 }
 
-void EndCondition::SetParam(End end_type, Color end_color, float end_distance, float end_theta) {
+void EndCondition::SetParam(End end_type, Color end_color, float end_threshold) {
   end_type_ = end_type;
   end_color_ = end_color;
-  end_distance_ = end_distance;
-  end_theta_ = end_theta;
+  end_threshold_ = end_threshold;
   end_state_ = false;
 
   if (end_type_ == kDistanceEnd) {
@@ -121,12 +120,12 @@ bool EndCondition::IsSatisfied() {
       break;
 
     case kDistanceEnd:
-      if (localize_->distance_ - ref_distance_ > end_distance_)
+      if (localize_->distance_ - ref_distance_ > end_threshold_)
         end_state_ = true;
       break;
 
     case kThetaEnd:
-      if (localize_->pose_.theta - ref_theta_ > end_theta_)
+      if (localize_->pose_.theta - ref_theta_ > end_threshold_)
         end_state_ = true;
       break;
 
@@ -155,7 +154,7 @@ void DrivingManager::Update() {
   }
 
   DriveTracer(curr_param);
-  if (EndConditionSatisfied()) {
+  if (end_condition_->IsSatisfied()) {
     curr_param.is_finished = true;
   }
 
@@ -195,10 +194,9 @@ void DrivingManager::SetTracerParam(DrivingParam& param) {
 void DrivingManager::SetEndParam(DrivingParam& param) {
   End end_type = param.end_type;
   Color end_color = param.end_color;
-  float end_distance = param.end_distance;
-  float end_theta = param.end_theta;
+  float end_threshold = param.end_threshold;
 
-  end_condition_->SetParam(end_type, end_color, end_distance, end_theta);
+  end_condition_->SetParam(end_type, end_color, end_threshold);
 }
 
 void DrivingManager::DriveTracer(DrivingParam& param) {
@@ -220,8 +218,4 @@ void DrivingManager::DriveTracer(DrivingParam& param) {
     default:
       break;
   }
-}
-
-bool DrivingManager::EndConditionSatisfied() {
-  return end_condition_->IsSatisfied();
 }

@@ -56,8 +56,7 @@ struct DrivingParam {
   Gain gain;
   End end_type;
   Color end_color;
-  float end_distance;
-  float end_theta;
+  float end_threshold;
   bool is_started;
   bool is_finished;
 };
