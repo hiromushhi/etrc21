@@ -38,19 +38,22 @@ enum Trace {
 enum End {
   kColorEnd = 0,
   kDistanceEnd,
+  kThetaEnd,
   kIvalidEnd,
   kEndNum
 };
 
 struct DrivingParam {
   Trace trace_type;
-  int8_t std_power;
-  float value_ref;
+  int8_t ref_power;
+  float ref_value;
   float kp;
   float ki;
   float kd;
   End end_type;
   Color end_color;
+  float end_distance;
+  float end_theta;
   bool is_started;
   bool is_finished;
 };
