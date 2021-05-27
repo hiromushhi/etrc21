@@ -101,7 +101,7 @@ void Luminous::UpdateColor() {
 
 Localize::Localize(MotorIo* motor_io)
     : pose_({0, 0, 0}), distance_(0), motor_io_(motor_io),
-      radius_(45), tread_(140), dtheta_th_(0.001) {
+      radius_(45), tread_(140) {
 }
 
 void Localize::Update() {
@@ -111,24 +111,17 @@ void Localize::Update() {
   int32_t counts_l = motor_io_->counts_l_;
   int32_t counts_r = motor_io_->counts_r_;
 
-  float dPhiL = (counts_l - prev_counts_l_) * M_PI / 180;
-  float dPhiR = (counts_r - prev_counts_r_) * M_PI / 180;
+  double dPhiL = (counts_l - prev_counts_l_) * M_PI / 180;
+  double dPhiR = (counts_r - prev_counts_r_) * M_PI / 180;
 
-  float dLL = radius_ * dPhiL;
-  float dLR = radius_ * dPhiR;
-  float dL = (dLR + dLL) / 2;
-  float dtheta = (dLR - dLL) / tread_;
+  double dLL = radius_ * dPhiL;
+  double dLR = radius_ * dPhiR;
+  double dL = (dLR + dLL) / 2;
+  double dtheta = (dLR - dLL) / tread_;
 
-  pose_.theta = pose_.theta + dtheta;
-  if (dtheta < dtheta_th_) {
-    pose_.x = pose_.x + dL * cos(pose_.theta + dtheta / 2);
-    pose_.y = pose_.y + dL * sin(pose_.theta + dtheta / 2);
-  } else {
-    float rho = dL / dtheta;
-    float dLprime = 2 * rho * sin(dtheta / 2);
-    pose_.x = pose_.x + dLprime * cos(pose_.theta + dtheta / 2);
-    pose_.y = pose_.y + dLprime * sin(pose_.theta + dtheta / 2);
-  }
+  pose_.x += dL * cos(pose_.theta + dtheta / 2);
+  pose_.y += dL * sin(pose_.theta + dtheta / 2);
+  pose_.theta += dtheta;
 
   prev_counts_l_ = counts_l;
   prev_counts_r_ = counts_r;

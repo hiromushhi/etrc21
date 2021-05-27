@@ -38,9 +38,9 @@ struct Hsv {
 };
 
 struct Pose {
-  float x;
-  float y;
-  float theta;
+  double x;
+  double y;
+  double theta;
 };
 
 struct Gain {

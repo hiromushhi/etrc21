@@ -25,13 +25,12 @@ class Localize {
   Localize(MotorIo* motor_io);
   void Update();
   Pose pose_;
-  float distance_;
+  double distance_;
 
  private:
   MotorIo* motor_io_;
   float radius_;  // タイヤの半径 [mm]
   float tread_;  // 左右の車輪中心間距離 [mm]
-  float dtheta_th_;  // dthetaが十分小さいか判定する閾値
 };
 
 class SpeedMeter {
