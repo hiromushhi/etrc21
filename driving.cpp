@@ -7,14 +7,13 @@ WheelsControl::WheelsControl(MotorIo* motor_io) : motor_io_(motor_io) {
 
 void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
   int8_t curr_power_l = motor_io_->power_l_;
-  int8_t curr_power_r = motor_io_->power_r_;
-
   if (target_power_l > curr_power_l) {
     curr_power_l += 1;
   } else if (target_power_l < curr_power_l) {
     curr_power_l -= 1;
   }
 
+  int8_t curr_power_r = motor_io_->power_r_;
   if (target_power_r > curr_power_r) {
     curr_power_r += 1;
   } else if (target_power_r < curr_power_r) {
@@ -26,7 +25,7 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
 
 RlineTracer::RlineTracer(WheelsControl* wheels_control, Luminous* luminous)
     : wheels_control_(wheels_control), luminous_(luminous),
-      trace_type_(kRlineLeft), ref_power_(0), ref_value_(0) {
+      trace_type_(kInvalidTrace), ref_power_(0), ref_value_(0) {
   pid_control_ = new PidControl();
 }
 
@@ -43,13 +42,12 @@ void RlineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, 
 
 void RlineTracer::Run() {
   float mv = pid_control_->GetMv(ref_value_, luminous_->hsv_.v);
-
   if (trace_type_ == kRlineLeft) {
     mv *= -1;
   }
+
   int8_t power_l = static_cast<int8_t>(ref_power_ + mv);
   int8_t power_r = static_cast<int8_t>(ref_power_ - mv);
-
   wheels_control_->Exec(power_l, power_r);
 }
 
