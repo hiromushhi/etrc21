@@ -34,11 +34,11 @@ RlineTracer::~RlineTracer() {
   delete pid_control_;
 }
 
-void RlineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, float kp, float ki, float kd) {
+void RlineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain) {
   trace_type_ = trace_type;
   ref_power_ = ref_power;
   ref_value_ = ref_value;
-  pid_control_->SetGain(kp, ki, kd);
+  pid_control_->SetGain(gain.kp, gain.ki, gain.kd);
 }
 
 void RlineTracer::Run() {
@@ -174,14 +174,12 @@ void DrivingManager::SetTracerParam(DrivingParam& param) {
   Trace trace_type = param.trace_type;
   int8_t ref_power = param.ref_power;
   float ref_value = param.ref_value;
-  float kp = param.kp;
-  float ki = param.ki;
-  float kd = param.kd;
+  Gain gain = param.gain;
 
   switch (trace_type) {
     case kRlineLeft:
     case kRlineRight:
-      rline_tracer_->SetParam(trace_type, ref_power, ref_value, kp, ki, kd);
+      rline_tracer_->SetParam(trace_type, ref_power, ref_value, gain);
       break;
 
     case kVlineForward:

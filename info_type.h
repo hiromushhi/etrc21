@@ -1,12 +1,6 @@
 #ifndef ETRC21_INFO_TYPE_H_
 #define ETRC21_INFO_TYPE_H_
 
-struct Hsv {
-  float h;
-  float s;
-  float v;
-};
-
 enum Color {
   kGreen = 0,
   kBlack,
@@ -16,12 +10,6 @@ enum Color {
   kWhite,
   kInvalidColor,
   kColorNum
-};
-
-struct Pose {
-  float x;
-  float y;
-  float theta;
 };
 
 enum Trace {
@@ -43,13 +31,29 @@ enum End {
   kEndNum
 };
 
+struct Hsv {
+  float h;
+  float s;
+  float v;
+};
+
+struct Pose {
+  float x;
+  float y;
+  float theta;
+};
+
+struct Gain {
+  float kp;
+  float ki;
+  float kd;
+};
+
 struct DrivingParam {
   Trace trace_type;
   int8_t ref_power;
   float ref_value;
-  float kp;
-  float ki;
-  float kd;
+  Gain gain;
   End end_type;
   Color end_color;
   float end_distance;

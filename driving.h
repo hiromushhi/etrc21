@@ -20,7 +20,7 @@ class RlineTracer {
  public:
   RlineTracer(WheelsControl* wheels_control, Luminous* luminous);
   ~RlineTracer();
-  void SetParam(Trace trace_type, int8_t ref_power, float ref_value, float kp, float ki, float kd);
+  void SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain);
   void Run();
   void Stop();
 
