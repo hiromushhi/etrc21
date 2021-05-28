@@ -1,5 +1,6 @@
 #include "app.h"
 
+#include "etroboc_ext.h"
 #include "device_io.h"
 #include "etrc_info.h"
 #include "driving.h"
