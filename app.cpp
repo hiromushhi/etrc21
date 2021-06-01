@@ -4,6 +4,7 @@
 #include "device_io.h"
 #include "etrc_info.h"
 #include "driving.h"
+#include "state.h"
 
 #if defined(MAKE_SIM)
 static const bool kSimulator = true;
@@ -27,6 +28,7 @@ LineTracer* line_tracer;
 BasicMover* basic_mover;
 EndCondition* end_condition;
 DrivingManager* driving_manager;
+StateManager* state_manager;
 
 static void initialize() {
   motor_io = new MotorIo();
@@ -39,9 +41,11 @@ static void initialize() {
   basic_mover = new BasicMover(wheels_control);
   end_condition = new EndCondition(luminous, localize);
   driving_manager = new DrivingManager(line_tracer, basic_mover, end_condition);
+  state_manager = new StateManager(driving_manager);
 }
 
 static void finalize() {
+  delete state_manager;
   delete driving_manager;
   delete end_condition;
   delete basic_mover;
@@ -82,6 +86,7 @@ void main_task(intptr_t unused) {
 }
 
 void exec_action_task(intptr_t unused) {
+  state_manager->Update();
   ext_tsk();
 }
 
