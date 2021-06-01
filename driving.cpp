@@ -55,20 +55,20 @@ void LineTracer::Stop() {
   wheels_control_->Exec(0, 0);
 }
 
-VlineTracer::VlineTracer(WheelsControl* wheels_control)
+BasicMover::BasicMover(WheelsControl* wheels_control)
     : wheels_control_(wheels_control),
       trace_type_(kInvalidTrace), ref_power_(0) {
 }
 
-VlineTracer::~VlineTracer() {
+BasicMover::~BasicMover() {
 }
 
-void VlineTracer::SetParam(Trace trace_type, int8_t ref_power) {
+void BasicMover::SetParam(Trace trace_type, int8_t ref_power) {
   trace_type_ = trace_type;
   ref_power_ = ref_power;
 }
 
-void VlineTracer::Run() {
+void BasicMover::Run() {
   int8_t power_l;
   int8_t power_r;
 
@@ -89,7 +89,7 @@ void VlineTracer::Run() {
   wheels_control_->Exec(power_l, power_r);
 }
 
-void VlineTracer::Stop() {
+void BasicMover::Stop() {
   wheels_control_->Exec(0, 0);
 }
 
@@ -138,13 +138,13 @@ bool EndCondition::IsSatisfied() {
   return end_state_;
 }
 
-DrivingManager::DrivingManager(LineTracer* line_tracer, VlineTracer* vline_tracer, EndCondition* end_condition)
-    : line_tracer_(line_tracer), vline_tracer_(vline_tracer), end_condition_(end_condition) {
+DrivingManager::DrivingManager(LineTracer* line_tracer, BasicMover* basic_mover, EndCondition* end_condition)
+    : line_tracer_(line_tracer), basic_mover_(basic_mover), end_condition_(end_condition) {
 }
 
 void DrivingManager::Update() {
   if (driving_params_.empty()) {
-    vline_tracer_->Stop();
+    basic_mover_->Stop();
     return;
   }
 
@@ -185,7 +185,7 @@ void DrivingManager::SetTracerParam(DrivingParam& param) {
     case kVlineBackward:
     case kVlineLeftRotation:
     case kVlineRightRotation:
-      vline_tracer_->SetParam(trace_type, ref_power);
+      basic_mover_->SetParam(trace_type, ref_power);
       break;
 
     default:
@@ -214,7 +214,7 @@ void DrivingManager::DriveTracer(DrivingParam& param) {
     case kVlineBackward:
     case kVlineLeftRotation:
     case kVlineRightRotation:
-      vline_tracer_->Run();
+      basic_mover_->Run();
       break;
 
     default:

@@ -33,10 +33,10 @@ class LineTracer {
   PidControl* pid_control_;
 };
 
-class VlineTracer {
+class BasicMover {
  public:
-  VlineTracer(WheelsControl* wheels_control);
-  ~VlineTracer();
+  BasicMover(WheelsControl* wheels_control);
+  ~BasicMover();
   void SetParam(Trace trace_type, int8_t ref_power);
   void Run();
   void Stop();
@@ -67,7 +67,7 @@ class EndCondition {
 
 class DrivingManager {
  public:
-  DrivingManager(LineTracer* line_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
+  DrivingManager(LineTracer* line_tracer, BasicMover* basic_mover, EndCondition* end_condition);
   void Update();
   void AddDrivingParam(DrivingParam param);
 
@@ -76,7 +76,7 @@ class DrivingManager {
   void SetEndParam(DrivingParam& param);
   void DriveTracer(DrivingParam& param);
   LineTracer* line_tracer_;
-  VlineTracer* vline_tracer_;
+  BasicMover* basic_mover_;
   EndCondition* end_condition_;
   std::list<DrivingParam> driving_params_;
 };
