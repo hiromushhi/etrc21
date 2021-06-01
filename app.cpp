@@ -62,7 +62,6 @@ void main_task(intptr_t unused) {
   initialize();
 
   sta_cyc(UPDATE_INFO_CYC);
-
   while (true) {
     if (sensor_io->touch_sensor_pressed_) {
       break;
@@ -71,7 +70,6 @@ void main_task(intptr_t unused) {
   }
 
   sta_cyc(EXEC_ACTION_CYC);
-
   while (true) {
     if (sensor_io->back_button_pressed_) {
       break;
