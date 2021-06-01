@@ -41,7 +41,7 @@ static void initialize() {
   basic_mover = new BasicMover(wheels_control);
   end_condition = new EndCondition(luminous, localize);
   driving_manager = new DrivingManager(line_tracer, basic_mover, end_condition);
-  state_manager = new StateManager(driving_manager);
+  state_manager = new StateManager(driving_manager, kRcourse);
 }
 
 static void finalize() {
