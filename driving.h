@@ -72,9 +72,9 @@ class DrivingManager {
   void AddDrivingParam(DrivingParam param);
 
  private:
-  void SetTracerParam(DrivingParam& param);
+  void SetMoveParam(DrivingParam& param);
   void SetEndParam(DrivingParam& param);
-  void DriveTracer(DrivingParam& param);
+  void Drive(DrivingParam& param);
   LineTracer* line_tracer_;
   BasicMover* basic_mover_;
   EndCondition* end_condition_;
