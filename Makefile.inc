@@ -2,7 +2,7 @@ mkfile_path := $(dir $(lastword $(MAKEFILE_LIST)))
 
 APPL_COBJS +=
 
-APPL_CXXOBJS += device_io.o etrc_info.o utils.o driving.o
+APPL_CXXOBJS += device_io.o etrc_info.o utils.o driving.o state.o
 
 SRCLANG := c++
 
