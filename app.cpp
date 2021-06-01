@@ -23,7 +23,7 @@ Luminous* luminous;
 Localize* localize;
 SpeedMeter* speed_meter;
 WheelsControl* wheels_control;
-RlineTracer* rline_tracer;
+LineTracer* line_tracer;
 VlineTracer* vline_tracer;
 EndCondition* end_condition;
 DrivingManager* driving_manager;
@@ -35,17 +35,17 @@ static void initialize() {
   localize = new Localize(motor_io);
   speed_meter = new SpeedMeter(localize);
   wheels_control = new WheelsControl(motor_io);
-  rline_tracer = new RlineTracer(wheels_control, luminous);
+  line_tracer = new LineTracer(wheels_control, luminous);
   vline_tracer = new VlineTracer(wheels_control);
   end_condition = new EndCondition(luminous, localize);
-  driving_manager = new DrivingManager(rline_tracer, vline_tracer, end_condition);
+  driving_manager = new DrivingManager(line_tracer, vline_tracer, end_condition);
 }
 
 static void finalize() {
   delete driving_manager;
   delete end_condition;
   delete vline_tracer;
-  delete rline_tracer;
+  delete line_tracer;
   delete wheels_control;
   delete speed_meter;
   delete localize;

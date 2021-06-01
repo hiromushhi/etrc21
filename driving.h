@@ -16,10 +16,10 @@ class WheelsControl {
   MotorIo* motor_io_;
 };
 
-class RlineTracer {
+class LineTracer {
  public:
-  RlineTracer(WheelsControl* wheels_control, Luminous* luminous);
-  ~RlineTracer();
+  LineTracer(WheelsControl* wheels_control, Luminous* luminous);
+  ~LineTracer();
   void SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain);
   void Run();
   void Stop();
@@ -67,7 +67,7 @@ class EndCondition {
 
 class DrivingManager {
  public:
-  DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
+  DrivingManager(LineTracer* line_tracer, VlineTracer* vline_tracer, EndCondition* end_condition);
   void Update();
   void AddDrivingParam(DrivingParam param);
 
@@ -75,7 +75,7 @@ class DrivingManager {
   void SetTracerParam(DrivingParam& param);
   void SetEndParam(DrivingParam& param);
   void DriveTracer(DrivingParam& param);
-  RlineTracer* rline_tracer_;
+  LineTracer* line_tracer_;
   VlineTracer* vline_tracer_;
   EndCondition* end_condition_;
   std::list<DrivingParam> driving_params_;

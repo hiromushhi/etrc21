@@ -23,24 +23,24 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
   motor_io_->SetWheelsPower(curr_power_l, curr_power_r);
 }
 
-RlineTracer::RlineTracer(WheelsControl* wheels_control, Luminous* luminous)
+LineTracer::LineTracer(WheelsControl* wheels_control, Luminous* luminous)
     : wheels_control_(wheels_control), luminous_(luminous),
       trace_type_(kInvalidTrace), ref_power_(0), ref_value_(0) {
   pid_control_ = new PidControl();
 }
 
-RlineTracer::~RlineTracer() {
+LineTracer::~LineTracer() {
   delete pid_control_;
 }
 
-void RlineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain) {
+void LineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain) {
   trace_type_ = trace_type;
   ref_power_ = ref_power;
   ref_value_ = ref_value;
   pid_control_->SetGain(gain.kp, gain.ki, gain.kd);
 }
 
-void RlineTracer::Run() {
+void LineTracer::Run() {
   float mv = pid_control_->GetMv(ref_value_, luminous_->hsv_.v);
   if (trace_type_ == kRlineLeft) {
     mv *= -1;
@@ -51,7 +51,7 @@ void RlineTracer::Run() {
   wheels_control_->Exec(power_l, power_r);
 }
 
-void RlineTracer::Stop() {
+void LineTracer::Stop() {
   wheels_control_->Exec(0, 0);
 }
 
@@ -138,8 +138,8 @@ bool EndCondition::IsSatisfied() {
   return end_state_;
 }
 
-DrivingManager::DrivingManager(RlineTracer* rline_tracer, VlineTracer* vline_tracer, EndCondition* end_condition)
-    : rline_tracer_(rline_tracer), vline_tracer_(vline_tracer), end_condition_(end_condition) {
+DrivingManager::DrivingManager(LineTracer* line_tracer, VlineTracer* vline_tracer, EndCondition* end_condition)
+    : line_tracer_(line_tracer), vline_tracer_(vline_tracer), end_condition_(end_condition) {
 }
 
 void DrivingManager::Update() {
@@ -178,7 +178,7 @@ void DrivingManager::SetTracerParam(DrivingParam& param) {
   switch (trace_type) {
     case kRlineLeft:
     case kRlineRight:
-      rline_tracer_->SetParam(trace_type, ref_power, ref_value, gain);
+      line_tracer_->SetParam(trace_type, ref_power, ref_value, gain);
       break;
 
     case kVlineForward:
@@ -207,7 +207,7 @@ void DrivingManager::DriveTracer(DrivingParam& param) {
   switch (trace_type) {
     case kRlineLeft:
     case kRlineRight:
-      rline_tracer_->Run();
+      line_tracer_->Run();
       break;
 
     case kVlineForward:
