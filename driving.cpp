@@ -25,7 +25,7 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
 
 LineTracer::LineTracer(WheelsControl* wheels_control, Luminous* luminous)
     : wheels_control_(wheels_control), luminous_(luminous),
-      trace_type_(kInvalidTrace), ref_power_(0), ref_value_(0) {
+      move_type_(kInvalidMove), ref_power_(0), ref_value_(0) {
   pid_control_ = new PidControl();
 }
 
@@ -33,8 +33,8 @@ LineTracer::~LineTracer() {
   delete pid_control_;
 }
 
-void LineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain) {
-  trace_type_ = trace_type;
+void LineTracer::SetParam(Move move_type, int8_t ref_power, float ref_value, Gain gain) {
+  move_type_ = move_type;
   ref_power_ = ref_power;
   ref_value_ = ref_value;
   pid_control_->SetGain(gain.kp, gain.ki, gain.kd);
@@ -42,7 +42,7 @@ void LineTracer::SetParam(Trace trace_type, int8_t ref_power, float ref_value, G
 
 void LineTracer::Run() {
   float mv = pid_control_->GetMv(ref_value_, luminous_->hsv_.v);
-  if (trace_type_ == kRlineLeft) {
+  if (move_type_ == kTraceLeftEdge) {
     mv *= -1;
   }
 
@@ -57,14 +57,14 @@ void LineTracer::Stop() {
 
 BasicMover::BasicMover(WheelsControl* wheels_control)
     : wheels_control_(wheels_control),
-      trace_type_(kInvalidTrace), ref_power_(0) {
+      move_type_(kInvalidMove), ref_power_(0) {
 }
 
 BasicMover::~BasicMover() {
 }
 
-void BasicMover::SetParam(Trace trace_type, int8_t ref_power) {
-  trace_type_ = trace_type;
+void BasicMover::SetParam(Move move_type, int8_t ref_power) {
+  move_type_ = move_type;
   ref_power_ = ref_power;
 }
 
@@ -72,14 +72,14 @@ void BasicMover::Run() {
   int8_t power_l;
   int8_t power_r;
 
-  if (trace_type_ == kVlineForward) {
+  if (move_type_ == kGoForward) {
     power_l = power_r = ref_power_;
-  } else if (trace_type_ == kVlineBackward) {
+  } else if (move_type_ == kGoBackward) {
     power_l = power_r = -ref_power_;
-  } else if (trace_type_ == kVlineLeftRotation) {
+  } else if (move_type_ == kRotateLeft) {
     power_l = -ref_power_;
     power_r = ref_power_;
-  } else if (trace_type_ == kVlineRightRotation) {
+  } else if (move_type_ == kRotateRight) {
     power_l = ref_power_;
     power_r = -ref_power_;
   } else {
@@ -170,22 +170,22 @@ void DrivingManager::AddDrivingParam(DrivingParam param) {
 }
 
 void DrivingManager::SetTracerParam(DrivingParam& param) {
-  Trace trace_type = param.trace_type;
+  Move move_type = param.move_type;
   int8_t ref_power = param.ref_power;
   float ref_value = param.ref_value;
   Gain gain = param.gain;
 
-  switch (trace_type) {
-    case kRlineLeft:
-    case kRlineRight:
-      line_tracer_->SetParam(trace_type, ref_power, ref_value, gain);
+  switch (move_type) {
+    case kTraceLeftEdge:
+    case kTraceRightEdge:
+      line_tracer_->SetParam(move_type, ref_power, ref_value, gain);
       break;
 
-    case kVlineForward:
-    case kVlineBackward:
-    case kVlineLeftRotation:
-    case kVlineRightRotation:
-      basic_mover_->SetParam(trace_type, ref_power);
+    case kGoForward:
+    case kGoBackward:
+    case kRotateLeft:
+    case kRotateRight:
+      basic_mover_->SetParam(move_type, ref_power);
       break;
 
     default:
@@ -202,18 +202,18 @@ void DrivingManager::SetEndParam(DrivingParam& param) {
 }
 
 void DrivingManager::DriveTracer(DrivingParam& param) {
-  Trace trace_type = param.trace_type;
+  Move move_type = param.move_type;
 
-  switch (trace_type) {
-    case kRlineLeft:
-    case kRlineRight:
+  switch (move_type) {
+    case kTraceLeftEdge:
+    case kTraceRightEdge:
       line_tracer_->Run();
       break;
 
-    case kVlineForward:
-    case kVlineBackward:
-    case kVlineLeftRotation:
-    case kVlineRightRotation:
+    case kGoForward:
+    case kGoBackward:
+    case kRotateLeft:
+    case kRotateRight:
       basic_mover_->Run();
       break;
 

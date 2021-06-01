@@ -20,14 +20,14 @@ class LineTracer {
  public:
   LineTracer(WheelsControl* wheels_control, Luminous* luminous);
   ~LineTracer();
-  void SetParam(Trace trace_type, int8_t ref_power, float ref_value, Gain gain);
+  void SetParam(Move move_type, int8_t ref_power, float ref_value, Gain gain);
   void Run();
   void Stop();
 
  private:
   WheelsControl* wheels_control_;
   Luminous* luminous_;
-  Trace trace_type_;
+  Move move_type_;
   int8_t ref_power_;
   float ref_value_;
   PidControl* pid_control_;
@@ -37,14 +37,14 @@ class BasicMover {
  public:
   BasicMover(WheelsControl* wheels_control);
   ~BasicMover();
-  void SetParam(Trace trace_type, int8_t ref_power);
+  void SetParam(Move move_type, int8_t ref_power);
   void Run();
   void Stop();
 
  private:
   WheelsControl* wheels_control_;
   Localize* localize_;
-  Trace trace_type_;
+  Move move_type_;
   int8_t ref_power_;
 };
 

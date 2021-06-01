@@ -12,15 +12,15 @@ enum Color {
   kColorNum
 };
 
-enum Trace {
-  kRlineLeft = 0,
-  kRlineRight,
-  kVlineForward,
-  kVlineBackward,
-  kVlineLeftRotation,
-  kVlineRightRotation,
-  kInvalidTrace,
-  kTraceNum
+enum Move {
+  kTraceLeftEdge = 0,
+  kTraceRightEdge,
+  kGoForward,
+  kGoBackward,
+  kRotateLeft,
+  kRotateRight,
+  kInvalidMove,
+  kMoveNum
 };
 
 enum End {
@@ -50,7 +50,7 @@ struct Gain {
 };
 
 struct DrivingParam {
-  Trace trace_type;
+  Move move_type;
   int8_t ref_power;
   float ref_value;
   Gain gain;
