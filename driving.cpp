@@ -125,7 +125,9 @@ bool EndCondition::IsSatisfied() {
       break;
 
     case kThetaEnd:
-      if (localize_->pose_.theta - ref_theta_ > end_threshold_)
+      if (end_threshold_ > 0 && localize_->pose_.theta - ref_theta_ > end_threshold_)
+        end_state_ = true;
+      else if (end_threshold_ < 0 && localize_->pose_.theta - ref_theta_ < end_threshold_)
         end_state_ = true;
       break;
 
