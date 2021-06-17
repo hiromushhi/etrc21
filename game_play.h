@@ -1,0 +1,4 @@
+#ifndef ETRC21_GAME_PLAY_H_
+#define ETRC21_GAME_PLAY_H_
+
+#endif  // ETRC21_GAME_PLAY_H_
