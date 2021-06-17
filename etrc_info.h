@@ -33,15 +33,4 @@ class Localize {
   float tread_;  // 左右の車輪中心間距離 [mm]
 };
 
-class SpeedMeter {
- public:
-  SpeedMeter(Localize* localize);
-  void Update();
-  float speed_;
-
- private:
-  Localize* localize_;
-  float dt_;
-};
-
 #endif  // ETRC21_ETRC_INFO_H_

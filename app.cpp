@@ -22,7 +22,6 @@ MotorIo* motor_io;
 SensorIo* sensor_io;
 Luminous* luminous;
 Localize* localize;
-SpeedMeter* speed_meter;
 WheelsControl* wheels_control;
 LineTracer* line_tracer;
 BasicMover* basic_mover;
@@ -35,7 +34,6 @@ static void initialize() {
   sensor_io = new SensorIo();
   luminous = new Luminous(sensor_io);
   localize = new Localize(motor_io);
-  speed_meter = new SpeedMeter(localize);
   wheels_control = new WheelsControl(motor_io);
   line_tracer = new LineTracer(wheels_control, luminous);
   basic_mover = new BasicMover(wheels_control);
@@ -51,7 +49,6 @@ static void finalize() {
   delete basic_mover;
   delete line_tracer;
   delete wheels_control;
-  delete speed_meter;
   delete localize;
   delete luminous;
   delete sensor_io;
@@ -93,6 +90,5 @@ void update_info_task(intptr_t unused) {
   sensor_io->Update();
   luminous->Update();
   localize->Update();
-  speed_meter->Update();
   ext_tsk();
 }

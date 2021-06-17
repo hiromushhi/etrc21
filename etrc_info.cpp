@@ -128,16 +128,3 @@ void Localize::Update() {
 
   distance_ = ((counts_l + counts_r) / 2.0) * M_PI / 180 * radius_;
 }
-
-SpeedMeter::SpeedMeter(Localize* localize)
-    : speed_(0), localize_(localize), dt_(UPDATE_INFO_DT_MS/1000.0) {
-}
-
-void SpeedMeter::Update() {
-  static float prev_distance = 0;
-
-  float distance = localize_->distance_;
-  speed_ = (distance - prev_distance) / dt_;
-
-  prev_distance = distance;
-}
