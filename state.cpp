@@ -29,6 +29,9 @@ void StateManager::Update() {
 
 void StateManager::ActTimeAttack() {
   driving_manager_->Update();
+  if (driving_manager_->DrivingParamsEmpty()) {
+    state_ = kBlockBingo;
+  }
 }
 
 void StateManager::ActBlockBingo() {
