@@ -70,6 +70,7 @@ class DrivingManager {
   DrivingManager(LineTracer* line_tracer, BasicMover* basic_mover, EndCondition* end_condition);
   void Update();
   void AddDrivingParam(DrivingParam param);
+  bool DrivingParamsEmpty();
 
  private:
   void SetMoveParam(DrivingParam& param);

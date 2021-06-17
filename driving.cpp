@@ -20,7 +20,11 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
     curr_power_r -= 1;
   }
 
-  motor_io_->SetWheelsPower(curr_power_l, curr_power_r);
+  if (target_power_l == 0 && target_power_r == 0) {
+    motor_io_->StopWheels(false);
+  } else {
+    motor_io_->SetWheelsPower(curr_power_l, curr_power_r);
+  }
 }
 
 LineTracer::LineTracer(WheelsControl* wheels_control, Luminous* luminous)
@@ -143,8 +147,7 @@ DrivingManager::DrivingManager(LineTracer* line_tracer, BasicMover* basic_mover,
 }
 
 void DrivingManager::Update() {
-  if (driving_params_.empty()) {
-    basic_mover_->Stop();
+  if (driving_params_.size() <= 0) {
     return;
   }
 
@@ -163,10 +166,18 @@ void DrivingManager::Update() {
   if (curr_param.is_finished) {
     driving_params_.pop_front();
   }
+
+  if (driving_params_.empty()) {
+    basic_mover_->Stop();
+  }
 }
 
 void DrivingManager::AddDrivingParam(DrivingParam param) {
   driving_params_.push_back(param);
+}
+
+bool DrivingManager::DrivingParamsEmpty() {
+  return driving_params_.empty();
 }
 
 void DrivingManager::SetMoveParam(DrivingParam& param) {
