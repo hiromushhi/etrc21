@@ -1,7 +1,7 @@
 #include "state.h"
 
-StateManager::StateManager(DrivingManager* driving_manager, bool is_Rcourse)
-    : driving_manager_(driving_manager), is_Rcourse_(is_Rcourse),
+StateManager::StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent, bool is_Rcourse)
+    : driving_manager_(driving_manager), bingo_agent_(bingo_agent), is_Rcourse_(is_Rcourse),
       state_(kTimeAttack) {
   if (is_Rcourse_) {
     ;
@@ -35,4 +35,5 @@ void StateManager::ActTimeAttack() {
 }
 
 void StateManager::ActBlockBingo() {
+  driving_manager_->Update();
 }
