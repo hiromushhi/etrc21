@@ -3,7 +3,12 @@
 
 #include "driving.h"
 #include "game_play.h"
-#include "info_type.h"
+
+enum State {
+  kTimeAttack = 0,
+  kBlockBingo,
+  kStateNum
+};
 
 const int kLcourseParamsNum = 5;
 const DrivingParam kLcourseParams[kLcourseParamsNum] = {

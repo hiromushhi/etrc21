@@ -33,12 +33,6 @@ enum End {
   kEndNum
 };
 
-enum State {
-  kTimeAttack = 0,
-  kBlockBingo,
-  kStateNum
-};
-
 struct Hsv {
   float h;
   float s;
