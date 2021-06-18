@@ -7,12 +7,6 @@
 #include "game_play.h"
 #include "state.h"
 
-#if defined(MAKE_SIM)
-static const bool kSimulator = true;
-#else
-static const bool kSimulator = false;
-#endif
-
 #if defined(MAKE_RIGHT)
 static const bool kRcourse = true;
 #else
