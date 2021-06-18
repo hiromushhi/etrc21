@@ -1,7 +1,7 @@
 #ifndef ETRC21_INFO_TYPE_H_
 #define ETRC21_INFO_TYPE_H_
 
-#include <cstdint>
+#include <stdint.h>
 
 enum Color {
   kGreen = 0,
