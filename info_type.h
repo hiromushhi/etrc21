@@ -1,6 +1,8 @@
 #ifndef ETRC21_INFO_TYPE_H_
 #define ETRC21_INFO_TYPE_H_
 
+#include <cstdint>
+
 enum Color {
   kGreen = 0,
   kBlack,
@@ -65,6 +67,20 @@ struct DrivingParam {
   float end_threshold;
   bool is_started;
   bool is_finished;
+};
+
+enum BlockId {
+  kK1 = 0,
+  kR1,
+  kR2,
+  kY1,
+  kY2,
+  kB1,
+  kB2,
+  kG1,
+  kG2,
+  kInvalidBlockId,
+  kBlockIdNum,
 };
 
 #endif  // ETRC21_INFO_TYPE_H_
