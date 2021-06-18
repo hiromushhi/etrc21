@@ -63,18 +63,4 @@ struct DrivingParam {
   bool is_finished;
 };
 
-enum BlockId {
-  kK1 = 0,
-  kR1,
-  kR2,
-  kY1,
-  kY2,
-  kB1,
-  kB2,
-  kG1,
-  kG2,
-  kInvalidBlockId,
-  kBlockIdNum,
-};
-
 #endif  // ETRC21_INFO_TYPE_H_
