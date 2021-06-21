@@ -3,6 +3,7 @@
 
 const int kCircleNum = 28;
 const int kNextToMax = 8;
+const int kBlockNum = 9;
 
 enum BlockId {
   kK1 = 0,
@@ -26,13 +27,23 @@ struct Circle {
   Circle* next[kNextToMax];
 };
 
+struct Block {
+  BlockId id;
+  char color;
+  Circle* circle;
+  Circle* target;
+  bool carrying_completed;
+};
+
 class BingoArea {
  public:
   BingoArea(bool is_Rcourse);
   Circle circles_[kCircleNum];
+  Block blocks_[kBlockNum];
 
  private:
   void InitCircles();
+  void InitBlocks();
   bool is_Rcourse_;
 };
 

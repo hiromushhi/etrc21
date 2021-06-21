@@ -40,8 +40,21 @@ static const char* kRcourseCircleData[] = {
   "",
 };
 
+static const char* kBlockData[kBlockNum] = {
+  "0,K",
+  "1,R",
+  "2,R",
+  "3,Y",
+  "4,Y",
+  "5,B",
+  "6,B",
+  "7,G",
+  "8,G",
+};
+
 BingoArea::BingoArea(bool is_Rcourse) : is_Rcourse_(is_Rcourse) {
   InitCircles();
+  InitBlocks();
 }
 
 void BingoArea::InitCircles() {
@@ -81,5 +94,15 @@ void BingoArea::InitCircles() {
         }
       }
     }
+  }
+}
+
+void BingoArea::InitBlocks() {
+  int id;
+  char color;
+
+  for (int i = 0; i < kBlockNum; ++i) {
+    sscanf(kBlockData[i], "%d,%c", &id, &color);
+    blocks_[i] = { static_cast<BlockId>(id), color };
   }
 }
