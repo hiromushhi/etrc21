@@ -57,6 +57,22 @@ BingoArea::BingoArea(bool is_Rcourse) : is_Rcourse_(is_Rcourse) {
   InitBlocks();
 }
 
+void BingoArea::SetBlockPos(BlockId block_id, char circle_id) {
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* b = &blocks_[i];
+    if (b->id != block_id)
+      continue;
+
+    for (int j = 0; j < kCircleNum; ++j) {
+      Circle* c = &circles_[j];
+      if (c->id == circle_id) {
+        b->circle = c;
+        c->block = b;
+      }
+    }
+  }
+}
+
 void BingoArea::InitCircles() {
   char id, color;
   int x, y;

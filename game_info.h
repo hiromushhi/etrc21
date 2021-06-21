@@ -19,12 +19,15 @@ enum BlockId {
   kBlockIdNum,
 };
 
+struct Block;
+
 struct Circle {
   char id;
   int x;
   int y;
   char color;
   Circle* next[kNextToMax];
+  Block* block;
 };
 
 struct Block {
@@ -38,6 +41,7 @@ struct Block {
 class BingoArea {
  public:
   BingoArea(bool is_Rcourse);
+  void SetBlockPos(BlockId block_id, char circle_id);
   Circle circles_[kCircleNum];
   Block blocks_[kBlockNum];
 
