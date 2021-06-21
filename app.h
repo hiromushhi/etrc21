@@ -13,11 +13,13 @@ extern "C" {
 
 #define EXEC_ACTION_DT_MS 10
 #define UPDATE_INFO_DT_MS 10
+#define SOLVE_BINGO_DT_MS 10
 
 #ifndef TOPPERS_MACRO_ONLY
 extern void main_task(intptr_t exinf);
 extern void exec_action_task(intptr_t exinf);
 extern void update_info_task(intptr_t exinf);
+extern void solve_bingo_task(intptr_t exinf);
 #endif
 
 #ifdef __cplusplus

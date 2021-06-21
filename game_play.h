@@ -8,6 +8,7 @@ class BingoAgent {
   BingoAgent(bool is_Rcourse);
   ~BingoAgent();
   void SetBlockPos(BlockId block_id, char circle_id);
+  void SolveBingo();
 
  private:
   bool is_Rcourse_;

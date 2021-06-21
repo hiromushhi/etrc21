@@ -11,3 +11,6 @@ BingoAgent::~BingoAgent() {
 void BingoAgent::SetBlockPos(BlockId block_id, char circle_id) {
   bingo_area_->SetBlockPos(block_id, circle_id);
 }
+
+void BingoAgent::SolveBingo() {
+}

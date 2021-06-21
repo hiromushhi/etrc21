@@ -89,6 +89,7 @@ void main_task(intptr_t unused) {
 
   sta_cyc(EXEC_ACTION_CYC);
   setup_blockbingo();
+  sta_cyc(SOLVE_BINGO_CYC);
   while (true) {
     if (sensor_io->back_button_pressed_) {
       break;
@@ -96,6 +97,7 @@ void main_task(intptr_t unused) {
     tslp_tsk(100*1000U);
   }
 
+  stp_cyc(SOLVE_BINGO_CYC);
   stp_cyc(EXEC_ACTION_CYC);
   stp_cyc(UPDATE_INFO_CYC);
   finalize();
@@ -112,5 +114,14 @@ void update_info_task(intptr_t unused) {
   sensor_io->Update();
   luminous->Update();
   localize->Update();
+  ext_tsk();
+}
+
+void solve_bingo_task(intptr_t unused) {
+  static bool is_entry = true;
+  if (is_entry) {
+    bingo_agent->SolveBingo();
+    is_entry = false;
+  }
   ext_tsk();
 }
