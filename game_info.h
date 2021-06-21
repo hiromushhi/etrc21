@@ -1,6 +1,9 @@
 #ifndef ETRC21_GAME_INFO_H_
 #define ETRC21_GAME_INFO_H_
 
+const int kCircleNum = 28;
+const int kAdjacentMax = 8;
+
 enum BlockId {
   kK1 = 0,
   kR1,
@@ -15,9 +18,18 @@ enum BlockId {
   kBlockIdNum,
 };
 
+struct Circle {
+  char id;
+  int x;
+  int y;
+  char color;
+  Circle* adjacent[kAdjacentMax];
+};
+
 class BingoArea {
  public:
   BingoArea(bool is_Rcourse);
+  Circle circles_[kCircleNum];
 
  private:
   void InitCircles();
