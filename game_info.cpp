@@ -1,5 +1,8 @@
 #include "game_info.h"
 
+#include <stdlib.h>
+#include <math.h>
+
 #include "ev3api.h"
 
 static const char* kLcourseCircleData[kCircleNum] = {
@@ -52,5 +55,31 @@ void BingoArea::InitCircles() {
       sscanf(kLcourseCircleData[i], "%c,%d,%d,%c", &id, &x, &y, &color);
     }
     circles_[i] = { id, x, y, color };
+  }
+
+  for (int i = 0; i < kCircleNum; ++i) {
+    int ni = 0;
+    Circle* c1 = &circles_[i];
+    for (int j = 0; j < kCircleNum; ++j) {
+      Circle* c2 = &circles_[j];
+      if (c1->id == c2->id)
+        continue;
+
+      if (('1' <= c1->id && c1->id <= '9') || ('1' <= c2->id && c2->id <= '9')) {
+        double distance = sqrt(pow(c1->x - c2->x, 2) + pow(c1->y - c2->y, 2));
+        if (distance <= 3) {
+          c1->next[ni] = c2;
+          ++ni;
+        }
+      } else {
+        if (c1->x == c2->x && (abs(c1->y - c2->y) <= 7)) {
+          c1->next[ni] = c2;
+          ++ni;
+        } else if (c1->y == c2->y && (abs(c1->x - c2->x) <= 7)) {
+          c1->next[ni] = c2;
+          ++ni;
+        }
+      }
+    }
   }
 }

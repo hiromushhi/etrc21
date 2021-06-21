@@ -2,7 +2,7 @@
 #define ETRC21_GAME_INFO_H_
 
 const int kCircleNum = 28;
-const int kAdjacentMax = 8;
+const int kNextToMax = 8;
 
 enum BlockId {
   kK1 = 0,
@@ -23,7 +23,7 @@ struct Circle {
   int x;
   int y;
   char color;
-  Circle* adjacent[kAdjacentMax];
+  Circle* next[kNextToMax];
 };
 
 class BingoArea {
