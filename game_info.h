@@ -42,12 +42,17 @@ class BingoArea {
  public:
   BingoArea(bool is_Rcourse);
   void SetBlockPos(BlockId block_id, char circle_id);
+  void UpdateBlockTarget();
   Circle circles_[kCircleNum];
   Block blocks_[kBlockNum];
 
  private:
   void InitCircles();
   void InitBlocks();
+  Block* TargetUndecidedBlock();
+  void UpdateCenterMarkBlock(Block* block);
+  Block* SameColorBlock(Block* block);
+  double DistanceBtwCircles(Circle* c1, Circle* c2);
   bool is_Rcourse_;
 };
 

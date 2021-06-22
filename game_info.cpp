@@ -73,6 +73,50 @@ void BingoArea::SetBlockPos(BlockId block_id, char circle_id) {
   }
 }
 
+void BingoArea::UpdateBlockTarget() {
+  Block* b1;
+  Block* b2;
+  while (true) {
+    b1 = TargetUndecidedBlock();
+    if (b1 == NULL)
+      break;
+
+    if (b1->color == 'K') {
+      UpdateCenterMarkBlock(b1);
+      continue;
+    }
+    b2 = SameColorBlock(b1);
+
+    Circle* c1 = NULL;
+    Circle* c2 = NULL;
+    for (int i = 0; i < kCircleNum; ++i) {
+      Circle* c = &circles_[i];
+      if ('1' <= c->id && c->id <= '9' && c->color == b1->color) {
+        if (c1 == NULL)
+          c1 = c;
+        else
+          c2 = c;
+      }
+      if (c2 != NULL)
+        break;
+    }
+
+    double d1 = DistanceBtwCircles(b1->circle, c1) + DistanceBtwCircles(b2->circle, c2);
+    double d2 = DistanceBtwCircles(b1->circle, c2) + DistanceBtwCircles(b2->circle, c1);
+
+    if (d1 < d2) {
+      b1->target = c1;
+      b2->target = c2;
+    } else if (d1 > d2) {
+      b1->target = c2;
+      b2->target = c1;
+    } else {
+      b1->target = c1;
+      b2->target = c2;
+    }
+  }
+}
+
 void BingoArea::InitCircles() {
   char id, color;
   int x, y;
@@ -121,4 +165,40 @@ void BingoArea::InitBlocks() {
     sscanf(kBlockData[i], "%d,%c", &id, &color);
     blocks_[i] = { static_cast<BlockId>(id), color };
   }
+}
+
+Block* BingoArea::TargetUndecidedBlock() {
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* b = &blocks_[i];
+    if (b->target == NULL) {
+      return b;
+    }
+  }
+  return NULL;
+}
+
+void BingoArea::UpdateCenterMarkBlock(Block* block) {
+  for (int i = 0; i < kCircleNum; ++i) {
+    Circle* c = &circles_[i];
+    if (c->id == '9') {
+      block->target = c;
+      break;
+    }
+  }
+}
+
+Block* BingoArea::SameColorBlock(Block* block) {
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* b = &blocks_[i];
+    if (b->id == block->id) {
+      continue;
+    } else if (b->color == block->color) {
+      return b;
+    }
+  }
+  return NULL;
+}
+
+double BingoArea::DistanceBtwCircles(Circle* c1, Circle* c2) {
+  return sqrt(pow(c1->x - c2->x, 2) + pow(c1->y - c2->y, 2));
 }
