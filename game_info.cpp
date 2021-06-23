@@ -52,9 +52,14 @@ static const char* kBlockData[kBlockNum] = {
   "8,G",
 };
 
+static const char* kLcourseRobotPos = "X,3";
+
+static const char* kRcourseRobotPos = "";
+
 BingoArea::BingoArea(bool is_Rcourse) : is_Rcourse_(is_Rcourse) {
   InitCircles();
   InitBlocks();
+  InitRobot();
 }
 
 void BingoArea::SetBlockPos(BlockId block_id, char circle_id) {
@@ -164,6 +169,25 @@ void BingoArea::InitBlocks() {
   for (int i = 0; i < kBlockNum; ++i) {
     sscanf(kBlockData[i], "%d,%c", &id, &color);
     blocks_[i] = { static_cast<BlockId>(id), color };
+  }
+}
+
+void BingoArea::InitRobot() {
+  char circle_id;
+  int direction;
+
+  if (is_Rcourse_) {
+    sscanf(kRcourseRobotPos, "%c,%d", &circle_id, &direction);
+  } else {
+    sscanf(kLcourseRobotPos, "%c,%d", &circle_id, &direction);
+  }
+
+  for (int i = 0; i < kCircleNum; ++i) {
+    Circle* c = &circles_[i];
+    if (c->id == circle_id) {
+      robot_ = { c, static_cast<Direction>(direction) };
+      break;
+    }
   }
 }
 

@@ -19,6 +19,19 @@ enum BlockId {
   kBlockIdNum,
 };
 
+enum Direction {
+  kNorth = 0,
+  kSouth,
+  kEast,
+  kWest,
+  kNorthEast,
+  kSouthEast,
+  kNorthWest,
+  kSouthWest,
+  kInvalidDirection,
+  kDirectionNum,
+};
+
 struct Block;
 
 struct Circle {
@@ -38,21 +51,28 @@ struct Block {
   bool carrying_completed;
 };
 
+struct Robot {
+  Circle* circle;
+  Direction direction;
+};
+
 class BingoArea {
  public:
   BingoArea(bool is_Rcourse);
   void SetBlockPos(BlockId block_id, char circle_id);
   void UpdateBlockTarget();
+  double DistanceBtwCircles(Circle* c1, Circle* c2);
   Circle circles_[kCircleNum];
   Block blocks_[kBlockNum];
+  Robot robot_;
 
  private:
   void InitCircles();
   void InitBlocks();
+  void InitRobot();
   Block* TargetUndecidedBlock();
   void UpdateCenterMarkBlock(Block* block);
   Block* SameColorBlock(Block* block);
-  double DistanceBtwCircles(Circle* c1, Circle* c2);
   bool is_Rcourse_;
 };
 
