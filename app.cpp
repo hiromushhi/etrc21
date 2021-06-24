@@ -54,8 +54,6 @@ static void finalize() {
 }
 
 static void setup_blockbingo() {
-  tslp_tsk(1000*1000U);
-
   char k1 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_BLACK1));
   char r1 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_RED1));
   char r2 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_RED2));
@@ -81,22 +79,22 @@ static void setup_blockbingo() {
 
 void main_task(intptr_t unused) {
   initialize();
-
   sta_cyc(UPDATE_INFO_CYC);
+
   while (true) {
-    if (sensor_io->touch_sensor_pressed_) {
+    if (sensor_io->touch_sensor_pressed_)
       break;
-    }
     tslp_tsk(10*1000U);
   }
-
   sta_cyc(EXEC_ACTION_CYC);
+
+  tslp_tsk(1000*1000U);
   setup_blockbingo();
   sta_cyc(SOLVE_BINGO_CYC);
+
   while (true) {
-    if (sensor_io->back_button_pressed_) {
+    if (sensor_io->back_button_pressed_)
       break;
-    }
     tslp_tsk(100*1000U);
   }
 
@@ -121,6 +119,6 @@ void update_info_task(intptr_t unused) {
 }
 
 void solve_bingo_task(intptr_t unused) {
-  bingo_agent->SolveBingo();
+  bingo_agent->TakeOneStep();
   ext_tsk();
 }
