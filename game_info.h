@@ -41,6 +41,9 @@ struct Circle {
   char color;
   Circle* next[kNextToMax];
   Block* block;
+  int cost;
+  Circle* prev;
+  bool is_fixed;
 };
 
 struct Block {
