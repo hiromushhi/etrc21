@@ -55,6 +55,7 @@ static void finalize() {
 
 static void setup_blockbingo() {
   tslp_tsk(1000*1000U);
+
   char k1 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_BLACK1));
   char r1 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_RED1));
   char r2 = static_cast<char>(ETRoboc_getCourseInfo(ETROBOC_COURSE_INFO_BLOCK_POS_RED2));
@@ -74,6 +75,8 @@ static void setup_blockbingo() {
   bingo_agent->SetBlockPos(kB2, b2);
   bingo_agent->SetBlockPos(kG1, g1);
   bingo_agent->SetBlockPos(kG2, g2);
+
+  bingo_agent->UpdateBlockTarget();
 }
 
 void main_task(intptr_t unused) {
@@ -118,10 +121,6 @@ void update_info_task(intptr_t unused) {
 }
 
 void solve_bingo_task(intptr_t unused) {
-  static bool is_entry = true;
-  if (is_entry) {
-    bingo_agent->SolveBingo();
-    is_entry = false;
-  }
+  bingo_agent->SolveBingo();
   ext_tsk();
 }
