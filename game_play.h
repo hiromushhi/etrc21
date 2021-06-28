@@ -3,14 +3,30 @@
 
 #include "game_info.h"
 
+#include <list>
+
+class RouteStore {
+ public:
+  RouteStore(BingoArea* bingo_area);
+  void SaveMovingRoute(Circle* goal_circle);
+  void SaveCarryRoute(Circle* goal_circle);
+  std::list<char*> moving_routes_;
+
+ private:
+  BingoArea* bingo_area_;
+};
+
 class RouteSearch {
  public:
   RouteSearch(BingoArea* bingo_area);
   void ResetRouteSearchInfo();
   bool CalcMovingRoute(Circle* goal_circle);
+  void MoveRobot(Circle* goal_circle, bool back);
+  void CompleteCarryBlock(Block* block);
 
  private:
   BingoArea* bingo_area_;
+  std::list<Circle*> queue_;
 };
 
 class BlockDecision {
@@ -40,12 +56,14 @@ class BingoAgent {
  private:
   void DecideNextCarryBlock();
   void SearchMovingRoute();
+  void SearchCarryRoute();
   bool is_Rcourse_;
   Step curr_step_;
   Block* next_carry_block_;
   BingoArea* bingo_area_;
   BlockDecision* block_decision_;
   RouteSearch* route_search_;
+  RouteStore* route_store_;
 };
 
 #endif  // ETRC21_GAME_PLAY_H_

@@ -159,6 +159,7 @@ void BingoArea::InitCircles() {
         }
       }
     }
+    c1->next_num = ni;
   }
 }
 

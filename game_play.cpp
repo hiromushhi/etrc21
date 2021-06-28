@@ -1,10 +1,56 @@
 #include "game_play.h"
 
+#include <string.h>
 #include <limits>
 
 #include "ev3api.h"
 
 const int kMax = std::numeric_limits<int>::max();
+const int kRouteCharNum = 16;
+
+RouteStore::RouteStore(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+}
+
+void RouteStore::SaveMovingRoute(Circle* goal_circle) {
+  Circle* curr_circle = bingo_area_->robot_.circle;
+
+  char str[kRouteCharNum];
+  for (int i = 0; i < kRouteCharNum - 2; ++i) {
+    str[i] = curr_circle->id;
+    curr_circle = curr_circle->prev;
+    if (curr_circle->id == goal_circle->id) {
+      str[i + 1] = curr_circle->id;
+      str[i + 2] = '\0';
+      break;
+    }
+  }
+  char* route = new char(sizeof(str));
+  strcpy(route, str);
+  moving_routes_.push_back(route);
+  syslog(LOG_NOTICE, str);
+}
+
+void RouteStore::SaveCarryRoute(Circle* goal_circle) {
+  Circle* curr_circle = bingo_area_->robot_.circle;
+  Circle* back_circle = NULL;
+
+  char str[kRouteCharNum];
+  for (int i = 0; i < kRouteCharNum - 3; ++i) {
+    str[i] = curr_circle->id;
+    back_circle = curr_circle;
+    curr_circle = curr_circle->prev;
+    if (curr_circle->id == goal_circle->id) {
+      str[i + 1] = curr_circle->id;
+      str[i + 2] = back_circle->id;
+      str[i + 3] = '\0';
+      break;
+    }
+  }
+  char* route = new char(sizeof(str));
+  strcpy(route, str);
+  moving_routes_.push_back(route);
+  syslog(LOG_NOTICE, str);
+}
 
 RouteSearch::RouteSearch(BingoArea* bingo_area) : bingo_area_(bingo_area) {
 }
@@ -26,47 +72,60 @@ void RouteSearch::ResetRouteSearchInfo() {
 }
 
 bool RouteSearch::CalcMovingRoute(Circle* goal_circle) {
-  static Circle* curr_circle = NULL;
-
-  if (!goal_circle->is_fixed) {
-    goal_circle->cost = 0;
-    goal_circle->is_fixed = true;
-    curr_circle = goal_circle;
+  static bool is_entry = true;
+  if (is_entry) {
+    queue_.push_back(goal_circle);
+    is_entry = false;
   }
 
-  static int i = 0;
-  Circle* next_circle = curr_circle->next[i];
   Robot* robot = &bingo_area_->robot_;
-  static bool dead_end = true;
-
-  if (next_circle != NULL) {
-    if (next_circle->cost == -1 || next_circle->id == robot->circle->id) {
-      next_circle->cost = 0;
-      next_circle->prev = curr_circle;
-      dead_end = false;
-      if (next_circle->id == robot->circle->id) {
-        return true;
+  if (!queue_.empty()) {
+    Circle* curr_circle = queue_.front();
+    queue_.pop_front();
+    if (curr_circle->id == robot->circle->id) {
+      queue_.clear();
+      is_entry = true;
+      return true;
+    }
+    for (int i = 0; i < curr_circle->next_num; ++i) {
+      Circle* next_circle = curr_circle->next[i];
+      if (next_circle->cost == -1 || next_circle->id == robot->circle->id) {
+        next_circle->prev = curr_circle;
+        queue_.push_back(next_circle);
       }
     }
   }
 
-  ++i;
-  if (i >= kNextToMax) {
-    i = 0;
-    curr_circle->is_fixed = true;
-    if (dead_end) {
-      curr_circle = curr_circle->prev;
-    }
+  return false;
+}
 
-    for (int j = 0; j < kNextToMax; ++j) {
-      if (!curr_circle->next[j]->is_fixed && curr_circle->next[j]->cost != kMax) {
-        curr_circle = curr_circle->next[j];
-        dead_end = true;
+void RouteSearch::MoveRobot(Circle* goal_circle, bool back) {
+  Robot* robot = &bingo_area_->robot_;
+  if (back) {
+    Circle* curr_circle = robot->circle;
+    Circle* back_circle = NULL;
+    for (int i = 0; i < kCircleNum; ++i) {
+      back_circle = curr_circle;
+      curr_circle = curr_circle->prev;
+      if (curr_circle->id == goal_circle->id) {
         break;
       }
     }
+    robot->circle = back_circle;
+  } else {
+    robot->circle = goal_circle;
   }
-  return false;
+}
+
+void RouteSearch::CompleteCarryBlock(Block* block) {
+  Circle* before_circle = block->circle;
+  Circle* after_circle = block->target;
+
+  before_circle->block = NULL;
+  after_circle->block = block;
+
+  block->circle = block->target;
+  block->carrying_completed = true;
 }
 
 BlockDecision::BlockDecision(BingoArea* bingo_area) : bingo_area_(bingo_area) {
@@ -104,9 +163,11 @@ BingoAgent::BingoAgent(bool is_Rcourse)
   bingo_area_ = new BingoArea(is_Rcourse_);
   block_decision_ = new BlockDecision(bingo_area_);
   route_search_ = new RouteSearch(bingo_area_);
+  route_store_ = new RouteStore(bingo_area_);
 }
 
 BingoAgent::~BingoAgent() {
+  delete route_store_;
   delete route_search_;
   delete block_decision_;
   delete bingo_area_;
@@ -128,6 +189,10 @@ void BingoAgent::TakeOneStep() {
 
     case kMovingRouteUnresolved:
       SearchMovingRoute();
+      break;
+
+    case kCarryRouteUnresolved:
+      SearchCarryRoute();
       break;
 
     default:
@@ -152,9 +217,38 @@ void BingoAgent::SearchMovingRoute() {
     is_entry = false;
   }
 
+  static bool is_exit = false;
   if (route_search_->CalcMovingRoute(next_carry_block_->circle)) {
+    is_exit = true;
+  }
+
+  if (is_exit) {
+    route_store_->SaveMovingRoute(next_carry_block_->circle);
+    route_search_->MoveRobot(next_carry_block_->circle, false);
     curr_step_ = kCarryRouteUnresolved;
     is_entry = true;
-    syslog(LOG_NOTICE, "transition kCarryRouteUnresolved");
+    is_exit = false;
+  }
+}
+
+void BingoAgent::SearchCarryRoute() {
+  static bool is_entry = true;
+  if (is_entry) {
+    route_search_->ResetRouteSearchInfo();
+    is_entry = false;
+  }
+
+  static bool is_exit = false;
+  if (route_search_->CalcMovingRoute(next_carry_block_->target)) {
+    is_exit = true;
+  }
+
+  if (is_exit) {
+    route_store_->SaveCarryRoute(next_carry_block_->target);
+    route_search_->MoveRobot(next_carry_block_->target, true);
+    route_search_->CompleteCarryBlock(next_carry_block_);
+    curr_step_ = kCarryBlockUndecided;
+    is_entry = true;
+    is_exit = false;
   }
 }

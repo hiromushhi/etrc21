@@ -44,6 +44,7 @@ struct Circle {
   int cost;
   Circle* prev;
   bool is_fixed;
+  int next_num;
 };
 
 struct Block {
