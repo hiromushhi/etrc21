@@ -39,9 +39,9 @@ class BlockDecision {
 };
 
 enum Step {
-  kCarryBlockUndecided = 0,
-  kMovingRouteUnresolved,
-  kCarryRouteUnresolved,
+  kDecideCarryBlock = 0,
+  kSearchMovingRoute,
+  kSearchCarryRoute,
   kBingoCompleted,
 };
 
@@ -54,12 +54,12 @@ class BingoAgent {
   void TakeOneStep();
 
  private:
-  void DecideNextCarryBlock();
+  void DecideCarryBlock();
   void SearchMovingRoute();
   void SearchCarryRoute();
   bool is_Rcourse_;
   Step curr_step_;
-  Block* next_carry_block_;
+  Block* carry_block_;
   BingoArea* bingo_area_;
   BlockDecision* block_decision_;
   RouteSearch* route_search_;

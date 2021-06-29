@@ -159,7 +159,7 @@ Block* BlockDecision::NextCarryBlock() {
 }
 
 BingoAgent::BingoAgent(bool is_Rcourse)
-    : is_Rcourse_(is_Rcourse), curr_step_(kCarryBlockUndecided), next_carry_block_(NULL) {
+    : is_Rcourse_(is_Rcourse), curr_step_(kDecideCarryBlock), carry_block_(NULL) {
   bingo_area_ = new BingoArea(is_Rcourse_);
   block_decision_ = new BlockDecision(bingo_area_);
   route_search_ = new RouteSearch(bingo_area_);
@@ -183,15 +183,15 @@ void BingoAgent::UpdateBlockTarget() {
 
 void BingoAgent::TakeOneStep() {
   switch (curr_step_) {
-    case kCarryBlockUndecided:
-      DecideNextCarryBlock();
+    case kDecideCarryBlock:
+      DecideCarryBlock();
       break;
 
-    case kMovingRouteUnresolved:
+    case kSearchMovingRoute:
       SearchMovingRoute();
       break;
 
-    case kCarryRouteUnresolved:
+    case kSearchCarryRoute:
       SearchCarryRoute();
       break;
 
@@ -200,13 +200,13 @@ void BingoAgent::TakeOneStep() {
   }
 }
 
-void BingoAgent::DecideNextCarryBlock() {
-  next_carry_block_ = block_decision_->NextCarryBlock();
+void BingoAgent::DecideCarryBlock() {
+  carry_block_ = block_decision_->NextCarryBlock();
 
-  if (next_carry_block_ == NULL) {
+  if (carry_block_ == NULL) {
     curr_step_ = kBingoCompleted;
   } else {
-    curr_step_ = kMovingRouteUnresolved;
+    curr_step_ = kSearchMovingRoute;
   }
 }
 
@@ -218,14 +218,14 @@ void BingoAgent::SearchMovingRoute() {
   }
 
   static bool is_exit = false;
-  if (route_search_->CalcMovingRoute(next_carry_block_->circle)) {
+  if (route_search_->CalcMovingRoute(carry_block_->circle)) {
     is_exit = true;
   }
 
   if (is_exit) {
-    route_store_->SaveMovingRoute(next_carry_block_->circle);
-    route_search_->MoveRobot(next_carry_block_->circle, false);
-    curr_step_ = kCarryRouteUnresolved;
+    route_store_->SaveMovingRoute(carry_block_->circle);
+    route_search_->MoveRobot(carry_block_->circle, false);
+    curr_step_ = kSearchCarryRoute;
     is_entry = true;
     is_exit = false;
   }
@@ -239,15 +239,15 @@ void BingoAgent::SearchCarryRoute() {
   }
 
   static bool is_exit = false;
-  if (route_search_->CalcMovingRoute(next_carry_block_->target)) {
+  if (route_search_->CalcMovingRoute(carry_block_->target)) {
     is_exit = true;
   }
 
   if (is_exit) {
-    route_store_->SaveCarryRoute(next_carry_block_->target);
-    route_search_->MoveRobot(next_carry_block_->target, true);
-    route_search_->CompleteCarryBlock(next_carry_block_);
-    curr_step_ = kCarryBlockUndecided;
+    route_store_->SaveCarryRoute(carry_block_->target);
+    route_search_->MoveRobot(carry_block_->target, true);
+    route_search_->CompleteCarryBlock(carry_block_);
+    curr_step_ = kDecideCarryBlock;
     is_entry = true;
     is_exit = false;
   }
