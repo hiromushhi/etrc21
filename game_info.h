@@ -43,7 +43,7 @@ struct Circle {
   Block* block;
   int cost;
   Circle* prev;
-  bool is_fixed;
+  bool queue_added;
   int next_num;
 };
 

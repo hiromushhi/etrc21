@@ -10,7 +10,7 @@ class RouteStore {
   RouteStore(BingoArea* bingo_area);
   void SaveMovingRoute(Circle* goal_circle);
   void SaveCarryRoute(Circle* goal_circle);
-  std::list<char*> moving_routes_;
+  std::list<char*> routes_;
 
  private:
   BingoArea* bingo_area_;
@@ -21,7 +21,7 @@ class RouteSearch {
   RouteSearch(BingoArea* bingo_area);
   void ResetRouteSearchInfo();
   bool CalcMovingRoute(Circle* goal_circle);
-  void MoveRobot(Circle* goal_circle, bool back);
+  void MoveRobot(Circle* goal_circle, bool stepback);
   void CompleteCarryBlock(Block* block);
 
  private:

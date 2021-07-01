@@ -14,7 +14,7 @@ RouteStore::RouteStore(BingoArea* bingo_area) : bingo_area_(bingo_area) {
 void RouteStore::SaveMovingRoute(Circle* goal_circle) {
   Circle* curr_circle = bingo_area_->robot_.circle;
 
-  char str[kRouteCharNum];
+  char str[kRouteCharNum] = {};
   for (int i = 0; i < kRouteCharNum - 2; ++i) {
     str[i] = curr_circle->id;
     curr_circle = curr_circle->prev;
@@ -24,9 +24,9 @@ void RouteStore::SaveMovingRoute(Circle* goal_circle) {
       break;
     }
   }
-  char* route = new char(sizeof(str));
+  char* route = new char(strlen(str) + 1);
   strcpy(route, str);
-  moving_routes_.push_back(route);
+  routes_.push_back(route);
   syslog(LOG_NOTICE, str);
 }
 
@@ -34,7 +34,7 @@ void RouteStore::SaveCarryRoute(Circle* goal_circle) {
   Circle* curr_circle = bingo_area_->robot_.circle;
   Circle* back_circle = NULL;
 
-  char str[kRouteCharNum];
+  char str[kRouteCharNum] = {};
   for (int i = 0; i < kRouteCharNum - 3; ++i) {
     str[i] = curr_circle->id;
     back_circle = curr_circle;
@@ -46,9 +46,9 @@ void RouteStore::SaveCarryRoute(Circle* goal_circle) {
       break;
     }
   }
-  char* route = new char(sizeof(str));
+  char* route = new char(strlen(str) + 1);
   strcpy(route, str);
-  moving_routes_.push_back(route);
+  routes_.push_back(route);
   syslog(LOG_NOTICE, str);
 }
 
@@ -59,7 +59,7 @@ void RouteSearch::ResetRouteSearchInfo() {
   for (int i = 0; i < kCircleNum; ++i) {
     Circle* circle = &bingo_area_->circles_[i];
     circle->prev = NULL;
-    circle->is_fixed = false;
+    circle->queue_added = false;
 
     if ('1' <= circle->id && circle->id <= '9') {
       circle->cost = kMax;
@@ -74,6 +74,7 @@ void RouteSearch::ResetRouteSearchInfo() {
 bool RouteSearch::CalcMovingRoute(Circle* goal_circle) {
   static bool is_entry = true;
   if (is_entry) {
+    ResetRouteSearchInfo();
     queue_.push_back(goal_circle);
     is_entry = false;
   }
@@ -89,19 +90,22 @@ bool RouteSearch::CalcMovingRoute(Circle* goal_circle) {
     }
     for (int i = 0; i < curr_circle->next_num; ++i) {
       Circle* next_circle = curr_circle->next[i];
+      if (next_circle->queue_added)
+        continue;
+
       if (next_circle->cost == -1 || next_circle->id == robot->circle->id) {
+        next_circle->queue_added = true;
         next_circle->prev = curr_circle;
         queue_.push_back(next_circle);
       }
     }
   }
-
   return false;
 }
 
-void RouteSearch::MoveRobot(Circle* goal_circle, bool back) {
+void RouteSearch::MoveRobot(Circle* goal_circle, bool stepback) {
   Robot* robot = &bingo_area_->robot_;
-  if (back) {
+  if (stepback) {
     Circle* curr_circle = robot->circle;
     Circle* back_circle = NULL;
     for (int i = 0; i < kCircleNum; ++i) {
@@ -154,7 +158,6 @@ Block* BlockDecision::NextCarryBlock() {
       min = d;
     }
   }
-
   return next_carry_block;
 }
 
@@ -211,44 +214,22 @@ void BingoAgent::DecideCarryBlock() {
 }
 
 void BingoAgent::SearchMovingRoute() {
-  static bool is_entry = true;
-  if (is_entry) {
-    route_search_->ResetRouteSearchInfo();
-    is_entry = false;
-  }
+  bool is_found = route_search_->CalcMovingRoute(carry_block_->circle);
 
-  static bool is_exit = false;
-  if (route_search_->CalcMovingRoute(carry_block_->circle)) {
-    is_exit = true;
-  }
-
-  if (is_exit) {
+  if (is_found) {
     route_store_->SaveMovingRoute(carry_block_->circle);
     route_search_->MoveRobot(carry_block_->circle, false);
     curr_step_ = kSearchCarryRoute;
-    is_entry = true;
-    is_exit = false;
   }
 }
 
 void BingoAgent::SearchCarryRoute() {
-  static bool is_entry = true;
-  if (is_entry) {
-    route_search_->ResetRouteSearchInfo();
-    is_entry = false;
-  }
+  bool is_found = route_search_->CalcMovingRoute(carry_block_->target);
 
-  static bool is_exit = false;
-  if (route_search_->CalcMovingRoute(carry_block_->target)) {
-    is_exit = true;
-  }
-
-  if (is_exit) {
+  if (is_found) {
     route_store_->SaveCarryRoute(carry_block_->target);
     route_search_->MoveRobot(carry_block_->target, true);
     route_search_->CompleteCarryBlock(carry_block_);
     curr_step_ = kDecideCarryBlock;
-    is_entry = true;
-    is_exit = false;
   }
 }
