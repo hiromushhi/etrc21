@@ -66,6 +66,7 @@ class BingoArea {
   void SetBlockPos(BlockId block_id, char circle_id);
   void UpdateBlockTarget();
   double DistanceBtwCircles(Circle* c1, Circle* c2);
+  void InitRobot();
   Circle circles_[kCircleNum];
   Block blocks_[kBlockNum];
   Robot robot_;
@@ -73,7 +74,6 @@ class BingoArea {
  private:
   void InitCircles();
   void InitBlocks();
-  void InitRobot();
   Block* TargetUndecidedBlock();
   void UpdateCenterMarkBlock(Block* block);
   Block* SameColorBlock(Block* block);

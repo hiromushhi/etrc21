@@ -5,6 +5,15 @@
 
 #include <list>
 
+class ParamStore {
+ public:
+  ParamStore(BingoArea* bingo_area);
+  bool GenerateParam();
+
+ private:
+  BingoArea* bingo_area_;
+};
+
 class RouteStore {
  public:
   RouteStore(BingoArea* bingo_area);
@@ -66,6 +75,7 @@ class BingoAgent {
   BlockDecision* block_decision_;
   RouteSearch* route_search_;
   RouteStore* route_store_;
+  ParamStore* param_store_;
 };
 
 #endif  // ETRC21_GAME_PLAY_H_
