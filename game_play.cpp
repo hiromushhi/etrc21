@@ -27,7 +27,6 @@ void RouteStore::SaveMovingRoute(Circle* goal_circle) {
   char* route = new char(strlen(str) + 1);
   strcpy(route, str);
   routes_.push_back(route);
-  syslog(LOG_NOTICE, str);
 }
 
 void RouteStore::SaveCarryRoute(Circle* goal_circle) {
@@ -49,7 +48,6 @@ void RouteStore::SaveCarryRoute(Circle* goal_circle) {
   char* route = new char(strlen(str) + 1);
   strcpy(route, str);
   routes_.push_back(route);
-  syslog(LOG_NOTICE, str);
 }
 
 RouteSearch::RouteSearch(BingoArea* bingo_area) : bingo_area_(bingo_area) {
@@ -198,6 +196,10 @@ void BingoAgent::TakeOneStep() {
       SearchCarryRoute();
       break;
 
+    case kGenerateDrivingParam:
+      GenerateDrivingParam();
+      break;
+
     default:
       break;
   }
@@ -207,7 +209,7 @@ void BingoAgent::DecideCarryBlock() {
   carry_block_ = block_decision_->NextCarryBlock();
 
   if (carry_block_ == NULL) {
-    curr_step_ = kBingoCompleted;
+    curr_step_ = kGenerateDrivingParam;
   } else {
     curr_step_ = kSearchMovingRoute;
   }
@@ -232,4 +234,7 @@ void BingoAgent::SearchCarryRoute() {
     route_search_->CompleteCarryBlock(carry_block_);
     curr_step_ = kDecideCarryBlock;
   }
+}
+
+void BingoAgent::GenerateDrivingParam() {
 }

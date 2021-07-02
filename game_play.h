@@ -42,6 +42,7 @@ enum Step {
   kDecideCarryBlock = 0,
   kSearchMovingRoute,
   kSearchCarryRoute,
+  kGenerateDrivingParam,
   kBingoCompleted,
 };
 
@@ -57,6 +58,7 @@ class BingoAgent {
   void DecideCarryBlock();
   void SearchMovingRoute();
   void SearchCarryRoute();
+  void GenerateDrivingParam();
   bool is_Rcourse_;
   Step curr_step_;
   Block* carry_block_;
