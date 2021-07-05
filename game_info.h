@@ -67,6 +67,8 @@ class BingoArea {
   void UpdateBlockTarget();
   double DistanceBtwCircles(Circle* c1, Circle* c2);
   void InitRobot();
+  Circle* SameIdCircle(char circle_id);
+  Direction DirectionToGo(Circle* from, Circle* to);
   Circle circles_[kCircleNum];
   Block blocks_[kBlockNum];
   Robot robot_;

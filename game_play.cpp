@@ -8,7 +8,8 @@
 const int kMax = std::numeric_limits<int>::max();
 const int kRouteCharNum = 16;
 
-ParamStore::ParamStore(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+ParamStore::ParamStore(BingoArea* bingo_area, RouteStore* route_store)
+    : bingo_area_(bingo_area), route_store_(route_store) {
 }
 
 bool ParamStore::GenerateParam() {
@@ -172,7 +173,7 @@ BingoAgent::BingoAgent(bool is_Rcourse)
   block_decision_ = new BlockDecision(bingo_area_);
   route_search_ = new RouteSearch(bingo_area_);
   route_store_ = new RouteStore(bingo_area_);
-  param_store_ = new ParamStore(bingo_area_);
+  param_store_ = new ParamStore(bingo_area_, route_store_);
 }
 
 BingoAgent::~BingoAgent() {

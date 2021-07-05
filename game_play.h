@@ -5,13 +5,16 @@
 
 #include <list>
 
+class RouteStore;
+
 class ParamStore {
  public:
-  ParamStore(BingoArea* bingo_area);
+  ParamStore(BingoArea* bingo_area, RouteStore* route_store);
   bool GenerateParam();
 
  private:
   BingoArea* bingo_area_;
+  RouteStore* route_store_;
 };
 
 class RouteStore {

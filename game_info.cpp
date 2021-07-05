@@ -227,3 +227,40 @@ Block* BingoArea::SameColorBlock(Block* block) {
 double BingoArea::DistanceBtwCircles(Circle* c1, Circle* c2) {
   return sqrt(pow(c1->x - c2->x, 2) + pow(c1->y - c2->y, 2));
 }
+
+Circle* BingoArea::SameIdCircle(char circle_id) {
+  for (int i = 0; i < kCircleNum; ++i) {
+    Circle* c = &circles_[i];
+    if (c->id == circle_id) {
+      return c;
+    }
+  }
+  return NULL;
+}
+
+Direction BingoArea::DirectionToGo(Circle* from, Circle* to) {
+  int dx = to->x - from->x;
+  int dy = to->y - from->y;
+
+  if (dx == 0 && dy != 0) {
+    if (dy > 0)
+      return kNorth;
+    else
+      return kSouth;
+  } else if (dy == 0 && dx != 0) {
+    if (dx > 0)
+      return kEast;
+    else
+      return kWest;
+  } else {
+    if (dx > 0 && dy > 0)
+      return kNorthEast;
+    else if (dx > 0 && dy < 0)
+      return kSouthEast;
+    else if (dx < 0 && dy > 0)
+      return kNorthWest;
+    else if (dx < 0 && dy < 0)
+      return kSouthWest;
+  }
+  return kInvalidDirection;
+}
