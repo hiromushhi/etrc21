@@ -2,6 +2,7 @@
 #define ETRC21_GAME_PLAY_H_
 
 #include "game_info.h"
+#include "info_type.h"
 
 #include <list>
 
@@ -10,11 +11,14 @@ class RouteStore;
 class ParamStore {
  public:
   ParamStore(BingoArea* bingo_area, RouteStore* route_store);
+  void AddTraceParam(Robot* robot, Circle* next_circle);
+  void AddPlaceParam(Robot* robot, Circle* next_circle);
   bool GenerateParam();
 
  private:
   BingoArea* bingo_area_;
   RouteStore* route_store_;
+  std::list<DrivingParam> driving_params_;
 };
 
 class RouteStore {

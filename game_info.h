@@ -20,14 +20,14 @@ enum BlockId {
 };
 
 enum Direction {
-  kNorth = 0,
-  kSouth,
-  kEast,
-  kWest,
+  kEast = 0,
   kNorthEast,
-  kSouthEast,
+  kNorth,
   kNorthWest,
+  kWest,
   kSouthWest,
+  kSouth,
+  kSouthEast,
   kInvalidDirection,
   kDirectionNum,
 };

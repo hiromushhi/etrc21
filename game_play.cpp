@@ -12,7 +12,42 @@ ParamStore::ParamStore(BingoArea* bingo_area, RouteStore* route_store)
     : bingo_area_(bingo_area), route_store_(route_store) {
 }
 
+void ParamStore::AddTraceParam(Robot* robot, Circle* next_circle) {
+}
+
+void ParamStore::AddPlaceParam(Robot* robot, Circle* next_circle) {
+}
+
 bool ParamStore::GenerateParam() {
+  static bool is_entry = true;
+  if (is_entry) {
+    bingo_area_->InitRobot();
+    is_entry = false;
+  }
+
+  std::list<char*>& routes = route_store_->routes_;
+  if (routes.empty())
+    return true;
+
+  Robot* robot = &bingo_area_->robot_;
+  char* route = routes.front();
+  routes.pop_front();
+  for (size_t i = 0; i < strlen(route); ++i) {
+    Circle* next_circle = bingo_area_->SameIdCircle(route[i]);
+    if (robot->circle->id == next_circle->id)
+      continue;
+
+    Direction next_direction = bingo_area_->DirectionToGo(robot->circle, next_circle);
+    if (next_direction == kEast || next_direction == kNorth ||
+        next_direction == kWest || next_direction == kSouth) {
+      AddTraceParam(robot ,next_circle);
+    } else if (next_direction == kNorthEast || next_direction == kNorthWest ||
+               next_direction == kSouthWest || next_direction == kSouthEast) {
+      AddPlaceParam(robot ,next_circle);
+    }
+    robot->direction = next_direction;
+    robot->circle = next_circle;
+  }
   return false;
 }
 
