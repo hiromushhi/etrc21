@@ -177,6 +177,19 @@ BlockDecision::BlockDecision(BingoArea* bingo_area) : bingo_area_(bingo_area) {
 }
 
 Block* BlockDecision::NextCarryBlock() {
+  Block* next_carry_block;
+
+  static bool is_1st_block = true;
+  if (is_1st_block) {
+    next_carry_block = Select1stBlock();
+    is_1st_block = false;
+  } else {
+    next_carry_block = Select2ndBlockOrLater();
+  }
+  return next_carry_block;
+}
+
+Block* BlockDecision::Select1stBlock() {
   Robot* robot = &bingo_area_->robot_;
   Block* next_carry_block = NULL;
 
@@ -200,6 +213,10 @@ Block* BlockDecision::NextCarryBlock() {
     }
   }
   return next_carry_block;
+}
+
+Block* BlockDecision::Select2ndBlockOrLater() {
+  return NULL;
 }
 
 BingoAgent::BingoAgent(bool is_Rcourse)

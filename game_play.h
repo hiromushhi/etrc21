@@ -51,6 +51,8 @@ class BlockDecision {
   Block* NextCarryBlock();
 
  private:
+  Block* Select1stBlock();
+  Block* Select2ndBlockOrLater();
   BingoArea* bingo_area_;
 };
 
