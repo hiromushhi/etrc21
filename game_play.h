@@ -52,8 +52,11 @@ class BlockDecision {
 
  private:
   Block* Select1stBlock();
-  Block* Select2ndBlockOrLater();
+  Block* Select2ndBlock();
+  Block* Select3rdTo8thBlock();
+  Block* SelectBlackBlock();
   BingoArea* bingo_area_;
+  int carried_blocks_num_;
 };
 
 enum Step {

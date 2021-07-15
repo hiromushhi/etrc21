@@ -173,19 +173,26 @@ void RouteSearch::CompleteCarryBlock(Block* block) {
   block->carrying_completed = true;
 }
 
-BlockDecision::BlockDecision(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+BlockDecision::BlockDecision(BingoArea* bingo_area)
+    : bingo_area_(bingo_area), carried_blocks_num_(0) {
 }
 
 Block* BlockDecision::NextCarryBlock() {
   Block* next_carry_block;
 
-  static bool is_1st_block = true;
-  if (is_1st_block) {
+  if (carried_blocks_num_ == 0) {
     next_carry_block = Select1stBlock();
-    is_1st_block = false;
+  } else if (carried_blocks_num_ == 1) {
+    next_carry_block = Select2ndBlock();
+  } else if (2 <= carried_blocks_num_ && carried_blocks_num_ <= 7) {
+    next_carry_block = Select3rdTo8thBlock();
+  } else if (carried_blocks_num_ == 8) {
+    next_carry_block = SelectBlackBlock();
   } else {
-    next_carry_block = Select2ndBlockOrLater();
+    next_carry_block = NULL;
   }
+  ++carried_blocks_num_;
+
   return next_carry_block;
 }
 
@@ -215,7 +222,15 @@ Block* BlockDecision::Select1stBlock() {
   return next_carry_block;
 }
 
-Block* BlockDecision::Select2ndBlockOrLater() {
+Block* BlockDecision::Select2ndBlock() {
+  return NULL;
+}
+
+Block* BlockDecision::Select3rdTo8thBlock() {
+  return NULL;
+}
+
+Block* BlockDecision::SelectBlackBlock() {
   return NULL;
 }
 
