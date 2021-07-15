@@ -228,6 +228,10 @@ double BingoArea::DistanceBtwCircles(Circle* c1, Circle* c2) {
   return sqrt(pow(c1->x - c2->x, 2) + pow(c1->y - c2->y, 2));
 }
 
+double BingoArea::DistanceFromCenter(Circle* c) {
+  return sqrt(pow(c->x, 2) + pow(c->y, 2));
+}
+
 Circle* BingoArea::SameIdCircle(char circle_id) {
   for (int i = 0; i < kCircleNum; ++i) {
     Circle* c = &circles_[i];

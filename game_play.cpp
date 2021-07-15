@@ -198,7 +198,7 @@ Block* BlockDecision::NextCarryBlock() {
 
 Block* BlockDecision::Select1stBlock() {
   Robot* robot = &bingo_area_->robot_;
-  Block* next_carry_block = NULL;
+  Block* first_block = NULL;
 
   double min = std::numeric_limits<double>::infinity();
   const double kDecisionCoeff = 1.5;
@@ -215,15 +215,32 @@ Block* BlockDecision::Select1stBlock() {
     }
 
     if (min > d) {
-      next_carry_block = block;
+      first_block = block;
       min = d;
     }
   }
-  return next_carry_block;
+
+  return first_block;
 }
 
 Block* BlockDecision::Select2ndBlock() {
-  return NULL;
+  Block* second_block = NULL;
+
+  double min = std::numeric_limits<double>::infinity();
+
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* block = &bingo_area_->blocks_[i];
+    if (block->carrying_completed)
+      continue;
+
+    double d = bingo_area_->DistanceFromCenter(block->circle);
+    if (min > d) {
+      second_block = block;
+      min = d;
+    }
+  }
+
+  return second_block;
 }
 
 Block* BlockDecision::Select3rdTo8thBlock() {
