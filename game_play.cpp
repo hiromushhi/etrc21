@@ -269,7 +269,15 @@ Block* BlockDecision::Select3rdTo8thBlock() {
 }
 
 Block* BlockDecision::SelectBlackBlock() {
-  return NULL;
+  Block* black_block = NULL;
+
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* block = &bingo_area_->blocks_[i];
+    if (block->color == 'K')
+      black_block = block;
+  }
+
+  return black_block;
 }
 
 BingoAgent::BingoAgent(bool is_Rcourse)
