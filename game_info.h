@@ -100,6 +100,7 @@ class BingoState {
 
  private:
   BingoArea* bingo_area_;
+  int max_count_;
   Pattern patterns_[kPatternNum];
 };
 

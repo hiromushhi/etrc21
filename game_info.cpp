@@ -277,7 +277,8 @@ Direction BingoArea::DirectionToGo(Circle* from, Circle* to) {
   return kInvalidDirection;
 }
 
-BingoState::BingoState(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+BingoState::BingoState(BingoArea* bingo_area)
+    : bingo_area_(bingo_area), max_count_(0) {
   for (int i = 0; i < kPatternNum; ++i) {
     strncpy(patterns_[i].str, kPatternStrData[i], kPatternStrLen);
     patterns_[i].count = 0;
@@ -286,8 +287,50 @@ BingoState::BingoState(BingoArea* bingo_area) : bingo_area_(bingo_area) {
 }
 
 void BingoState::Update() {
+  max_count_ = 0;
+  for (int i = 0; i < kPatternNum; ++i) {
+    patterns_[i].count = 0;
+    patterns_[i].is_completed = false;
+  }
+
+  for (int i = 0; i < kCircleNum; ++i) {
+    Circle* circle = &bingo_area_->circles_[i];
+    if ('1' <= circle->id && circle->id <= '9') {
+      if (circle->block == NULL)
+        continue;
+
+      for (int j = 0; j < kPatternNum; ++j) {
+        if (strchr(patterns_[j].str, static_cast<int>(circle->id)) != NULL)
+          patterns_[j].count += 1;
+
+        if (3 <= patterns_[j].count)
+          patterns_[j].is_completed = true;
+      }
+    }
+  }
+
+  for (int i = 0; i < kPatternNum; ++i) {
+    if (patterns_[i].is_completed)
+      continue;
+
+    if (max_count_ < patterns_[i].count)
+      max_count_ = patterns_[i].count;
+  }
+
 }
 
 bool BingoState::IsGoodCandBlock(Block* cand_block) {
-  return false;
+  bool is_suitable = false;
+
+  for (int i = 0; i < kPatternNum; ++i) {
+    if (patterns_[i].is_completed)
+      continue;
+
+    if (patterns_[i].count == max_count_ &&
+        strchr(patterns_[i].str, static_cast<int>(cand_block->target->id)) != NULL) {
+      is_suitable = true;
+    }
+  }
+
+  return is_suitable;
 }
