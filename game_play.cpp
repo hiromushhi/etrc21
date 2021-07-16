@@ -173,8 +173,8 @@ void RouteSearch::CompleteCarryBlock(Block* block) {
   block->carrying_completed = true;
 }
 
-BlockDecision::BlockDecision(BingoArea* bingo_area)
-    : bingo_area_(bingo_area), carried_blocks_num_(0) {
+BlockDecision::BlockDecision(BingoArea* bingo_area, BingoState* bingo_state)
+    : bingo_area_(bingo_area), bingo_state_(bingo_state), carried_blocks_num_(0) {
 }
 
 Block* BlockDecision::NextCarryBlock() {
@@ -244,7 +244,28 @@ Block* BlockDecision::Select2ndBlock() {
 }
 
 Block* BlockDecision::Select3rdTo8thBlock() {
-  return NULL;
+  Robot* robot = &bingo_area_->robot_;
+  Block* third_to_eighth_block = NULL;
+
+  double min = std::numeric_limits<double>::infinity();
+  bingo_state_->Update();
+
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* block = &bingo_area_->blocks_[i];
+    if (block->carrying_completed)
+      continue;
+
+    if (bingo_state_->IsGoodCandBlock(block)) {
+      double d = bingo_area_->DistanceBtwCircles(robot->circle, block->circle)
+               + bingo_area_->DistanceBtwCircles(block->circle, block->target);
+      if (min > d) {
+        third_to_eighth_block = block;
+        min = d;
+      }
+    }
+  }
+
+  return third_to_eighth_block;
 }
 
 Block* BlockDecision::SelectBlackBlock() {
@@ -254,7 +275,8 @@ Block* BlockDecision::SelectBlackBlock() {
 BingoAgent::BingoAgent(bool is_Rcourse)
     : is_Rcourse_(is_Rcourse), curr_step_(kDecideCarryBlock), carry_block_(NULL) {
   bingo_area_ = new BingoArea(is_Rcourse_);
-  block_decision_ = new BlockDecision(bingo_area_);
+  bingo_state_ = new BingoState(bingo_area_);
+  block_decision_ = new BlockDecision(bingo_area_, bingo_state_);
   route_search_ = new RouteSearch(bingo_area_);
   route_store_ = new RouteStore(bingo_area_);
   param_store_ = new ParamStore(bingo_area_, route_store_);
@@ -265,6 +287,7 @@ BingoAgent::~BingoAgent() {
   delete route_store_;
   delete route_search_;
   delete block_decision_;
+  delete bingo_state_;
   delete bingo_area_;
 }
 

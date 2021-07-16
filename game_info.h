@@ -83,4 +83,24 @@ class BingoArea {
   bool is_Rcourse_;
 };
 
+const int kPatternNum = 4;
+const int kPatternStrLen = 4;
+
+struct Pattern {
+  char str[kPatternStrLen];
+  int count;
+  bool is_completed;
+};
+
+class BingoState {
+ public:
+  BingoState(BingoArea* bingo_area);
+  void Update();
+  bool IsGoodCandBlock(Block* cand_block);
+
+ private:
+  BingoArea* bingo_area_;
+  Pattern patterns_[kPatternNum];
+};
+
 #endif  // ETRC21_GAME_INFO_H_

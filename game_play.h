@@ -47,7 +47,7 @@ class RouteSearch {
 
 class BlockDecision {
  public:
-  BlockDecision(BingoArea* bingo_area);
+  BlockDecision(BingoArea* bingo_area, BingoState* bingo_state);
   Block* NextCarryBlock();
 
  private:
@@ -56,6 +56,7 @@ class BlockDecision {
   Block* Select3rdTo8thBlock();
   Block* SelectBlackBlock();
   BingoArea* bingo_area_;
+  BingoState* bingo_state_;
   int carried_blocks_num_;
 };
 
@@ -84,6 +85,7 @@ class BingoAgent {
   Step curr_step_;
   Block* carry_block_;
   BingoArea* bingo_area_;
+  BingoState* bingo_state_;
   BlockDecision* block_decision_;
   RouteSearch* route_search_;
   RouteStore* route_store_;

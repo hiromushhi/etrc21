@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "ev3api.h"
 
@@ -55,6 +56,13 @@ static const char* kBlockData[kBlockNum] = {
 static const char* kLcourseRobotPos = "X,3";
 
 static const char* kRcourseRobotPos = "";
+
+static const char* kPatternStrData[kPatternNum] = {
+  "123",
+  "146",
+  "358",
+  "678",
+};
 
 BingoArea::BingoArea(bool is_Rcourse) : is_Rcourse_(is_Rcourse) {
   InitCircles();
@@ -267,4 +275,19 @@ Direction BingoArea::DirectionToGo(Circle* from, Circle* to) {
       return kSouthWest;
   }
   return kInvalidDirection;
+}
+
+BingoState::BingoState(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+  for (int i = 0; i < kPatternNum; ++i) {
+    strncpy(patterns_[i].str, kPatternStrData[i], kPatternStrLen);
+    patterns_[i].count = 0;
+    patterns_[i].is_completed = false;
+  }
+}
+
+void BingoState::Update() {
+}
+
+bool BingoState::IsGoodCandBlock(Block* cand_block) {
+  return false;
 }
