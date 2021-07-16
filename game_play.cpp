@@ -325,11 +325,10 @@ void BingoAgent::TakeOneStep() {
 void BingoAgent::DecideCarryBlock() {
   carry_block_ = block_decision_->NextCarryBlock();
 
-  if (carry_block_ == NULL) {
+  if (carry_block_ == NULL)
     curr_step_ = kGenerateDrivingParam;
-  } else {
+  else
     curr_step_ = kSearchMovingRoute;
-  }
 }
 
 void BingoAgent::SearchMovingRoute() {
@@ -356,7 +355,6 @@ void BingoAgent::SearchCarryRoute() {
 void BingoAgent::GenerateDrivingParam() {
   bool generate_completed = param_store_->GenerateParam();
 
-  if (generate_completed) {
+  if (generate_completed)
     curr_step_ = kBingoCompleted;
-  }
 }
