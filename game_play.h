@@ -21,15 +21,18 @@ class ParamStore {
   std::list<DrivingParam> driving_params_;
 };
 
+class RouteSearch;
+
 class RouteStore {
  public:
-  RouteStore(BingoArea* bingo_area);
+  RouteStore(BingoArea* bingo_area, RouteSearch* route_search);
   void SaveMovingRoute(Circle* goal_circle);
   void SaveCarryRoute(Circle* goal_circle);
   std::list<char*> routes_;
 
  private:
   BingoArea* bingo_area_;
+  RouteSearch* route_search_;
 };
 
 class RouteSearch {
@@ -39,6 +42,7 @@ class RouteSearch {
   bool CalcMovingRoute(Circle* goal_circle);
   void MoveRobot(Circle* goal_circle, bool stepback);
   void CompleteCarryBlock(Block* block);
+  Circle* reverse_circle_;
 
  private:
   BingoArea* bingo_area_;

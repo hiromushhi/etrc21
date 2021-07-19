@@ -51,15 +51,18 @@ bool ParamStore::GenerateParam() {
   return false;
 }
 
-RouteStore::RouteStore(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+RouteStore::RouteStore(BingoArea* bingo_area, RouteSearch* route_search)
+    : bingo_area_(bingo_area), route_search_(route_search) {
 }
 
 void RouteStore::SaveMovingRoute(Circle* goal_circle) {
   Circle* curr_circle = bingo_area_->robot_.circle;
+  Circle* back_circle = NULL;
 
   char str[kRouteCharNum] = {};
   for (int i = 0; i < kRouteCharNum - 2; ++i) {
     str[i] = curr_circle->id;
+    back_circle = curr_circle;
     curr_circle = curr_circle->prev;
     if (curr_circle->id == goal_circle->id) {
       str[i + 1] = curr_circle->id;
@@ -70,6 +73,11 @@ void RouteStore::SaveMovingRoute(Circle* goal_circle) {
   char* route = new char(strlen(str) + 1);
   strcpy(route, str);
   routes_.push_back(route);
+
+  if (goal_circle->id == '0')
+    route_search_->reverse_circle_ = NULL;
+  else
+    route_search_->reverse_circle_ = back_circle;
 }
 
 void RouteStore::SaveCarryRoute(Circle* goal_circle) {
@@ -93,7 +101,8 @@ void RouteStore::SaveCarryRoute(Circle* goal_circle) {
   routes_.push_back(route);
 }
 
-RouteSearch::RouteSearch(BingoArea* bingo_area) : bingo_area_(bingo_area) {
+RouteSearch::RouteSearch(BingoArea* bingo_area)
+    : reverse_circle_(NULL), bingo_area_(bingo_area) {
 }
 
 void RouteSearch::ResetRouteSearchInfo() {
@@ -102,14 +111,16 @@ void RouteSearch::ResetRouteSearchInfo() {
     circle->prev = NULL;
     circle->queue_added = false;
 
-    if ('1' <= circle->id && circle->id <= '9') {
+    if ('1' <= circle->id && circle->id <= '9')
       circle->cost = kMax;
-    } else if (circle->block != NULL) {
+    else if (circle->block != NULL)
       circle->cost = kMax;
-    } else {
+    else
       circle->cost = -1;
-    }
   }
+
+  if (reverse_circle_ != NULL)
+    reverse_circle_->cost = kMax;
 }
 
 bool RouteSearch::CalcMovingRoute(Circle* goal_circle) {
@@ -286,7 +297,7 @@ BingoAgent::BingoAgent(bool is_Rcourse)
   bingo_state_ = new BingoState(bingo_area_);
   block_decision_ = new BlockDecision(bingo_area_, bingo_state_);
   route_search_ = new RouteSearch(bingo_area_);
-  route_store_ = new RouteStore(bingo_area_);
+  route_store_ = new RouteStore(bingo_area_, route_search_);
   param_store_ = new ParamStore(bingo_area_, route_store_);
 }
 
