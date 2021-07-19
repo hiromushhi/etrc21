@@ -53,7 +53,7 @@ static const char* kBlockData[kBlockNum] = {
   "8,G",
 };
 
-static const char* kLcourseRobotPos = "X,3";
+static const char* kLcourseRobotPos = "X,4";
 
 static const char* kRcourseRobotPos = "";
 
