@@ -35,5 +35,14 @@ void StateManager::ActTimeAttack() {
 }
 
 void StateManager::ActBlockBingo() {
+  if (bingo_agent_->calc_completed_) {
+    ParamStore* param_store = bingo_agent_->param_store_;
+    std::list<DrivingParam>& driving_params = param_store->driving_params_;
+    if (!driving_params.empty()) {
+      DrivingParam driving_param = driving_params.front();
+      driving_manager_->AddDrivingParam(driving_param);
+      driving_params.pop_front();
+    }
+  }
   driving_manager_->Update();
 }

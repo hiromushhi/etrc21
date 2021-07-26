@@ -273,8 +273,9 @@ Direction BingoArea::DirectionToGo(Circle* from, Circle* to) {
       return kNorthWest;
     else if (dx < 0 && dy < 0)
       return kSouthWest;
+    else
+      return kInvalidDirection;
   }
-  return kInvalidDirection;
 }
 
 BingoState::BingoState(BingoArea* bingo_area)

@@ -11,14 +11,17 @@ class RouteStore;
 class ParamStore {
  public:
   ParamStore(BingoArea* bingo_area, RouteStore* route_store);
-  void AddTraceParam(Robot* robot, Circle* next_circle);
-  void AddPlaceParam(Robot* robot, Circle* next_circle);
   bool GenerateParam();
+  std::list<DrivingParam> driving_params_;
 
  private:
+  double LimitRotationAngle(double angle);
+  void AddTraceParam(Robot* robot, Circle* next_circle, Direction next_direction);
+  void AddPlaceParam(Robot* robot, Circle* next_circle, Direction next_direction);
   BingoArea* bingo_area_;
   RouteStore* route_store_;
-  std::list<DrivingParam> driving_params_;
+  bool is_wayback_;
+  bool is_wayback_after_;
 };
 
 class RouteSearch;
@@ -79,6 +82,8 @@ class BingoAgent {
   void SetBlockPos(BlockId block_id, char circle_id);
   void UpdateBlockTarget();
   void TakeOneStep();
+  bool calc_completed_;
+  ParamStore* param_store_;
 
  private:
   void DecideCarryBlock();
@@ -93,7 +98,6 @@ class BingoAgent {
   BlockDecision* block_decision_;
   RouteSearch* route_search_;
   RouteStore* route_store_;
-  ParamStore* param_store_;
 };
 
 #endif  // ETRC21_GAME_PLAY_H_

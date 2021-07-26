@@ -1,5 +1,6 @@
 #include "game_play.h"
 
+#include <math.h>
 #include <string.h>
 #include <limits>
 
@@ -9,13 +10,86 @@ const int kMax = std::numeric_limits<int>::max();
 const int kRouteCharNum = 16;
 
 ParamStore::ParamStore(BingoArea* bingo_area, RouteStore* route_store)
-    : bingo_area_(bingo_area), route_store_(route_store) {
+    : bingo_area_(bingo_area), route_store_(route_store),
+      is_wayback_(false), is_wayback_after_(false) {
 }
 
-void ParamStore::AddTraceParam(Robot* robot, Circle* next_circle) {
+double ParamStore::LimitRotationAngle(double angle) {
+  double ret_angle = angle;
+  if (fabs(angle) > M_PI) {
+    if (angle >= 0)
+      ret_angle = - (angle - M_PI);
+    else
+      ret_angle = - (angle + M_PI);
+  }
+  return ret_angle;
 }
 
-void ParamStore::AddPlaceParam(Robot* robot, Circle* next_circle) {
+void ParamStore::AddTraceParam(Robot* robot, Circle* next_circle, Direction next_direction) {
+  if (is_wayback_after_)
+    is_wayback_after_ = false;
+  else
+    driving_params_.push_back({ kGoForward, 8, 0, { }, kDistanceEnd, kInvalidColor, 60 });
+
+  if (robot->direction != next_direction) {
+    double from = static_cast<int>(robot->direction) * M_PI / 4;
+    double to = static_cast<int>(next_direction) * M_PI / 4;
+    double dtheta = LimitRotationAngle(to - from);
+    if (dtheta > 0)
+      driving_params_.push_back({ kRotateLeft, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+    else
+      driving_params_.push_back({ kRotateRight, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+  }
+
+  driving_params_.push_back({ kGoForward, 8, 0, { }, kDistanceEnd, kInvalidColor, 60 });
+
+  switch (next_circle->color) {
+    case 'R':
+      driving_params_.push_back({ kTraceRightEdge, 15, 50, { 0.4, 0, 0.05 }, kColorEnd, kRed, 0 });
+      break;
+    case 'G':
+      driving_params_.push_back({ kTraceRightEdge, 15, 50, { 0.4, 0, 0.05 }, kColorEnd, kGreen, 0 });
+      break;
+    case 'B':
+      driving_params_.push_back({ kTraceRightEdge, 15, 50, { 0.4, 0, 0.05 }, kColorEnd, kBlue, 0 });
+      break;
+    case 'Y':
+      driving_params_.push_back({ kTraceRightEdge, 15, 50, { 0.4, 0, 0.05 }, kColorEnd, kYellow, 0 });
+      break;
+    default:
+      break;
+  }
+
+  robot->direction = next_direction;
+  robot->circle = next_circle;
+}
+
+void ParamStore::AddPlaceParam(Robot* robot, Circle* next_circle, Direction next_direction) {
+  if (is_wayback_) {
+    driving_params_.push_back({ kGoBackward, 8, 0, { }, kDistanceEnd, kInvalidColor, -190 });
+    driving_params_.push_back({ kGoBackward, 8, 0, { }, kDistanceEnd, kInvalidColor, -70 });
+    robot->circle = next_circle;
+    is_wayback_ = false;
+    is_wayback_after_ = true;
+  } else {
+    driving_params_.push_back({ kGoForward, 8, 0, { }, kDistanceEnd, kInvalidColor, 60 });
+
+    if (robot->direction != next_direction) {
+      double from = static_cast<int>(robot->direction) * M_PI / 4;
+      double to = static_cast<int>(next_direction) * M_PI / 4;
+      double dtheta = LimitRotationAngle(to - from);
+      if (dtheta > 0)
+        driving_params_.push_back({ kRotateLeft, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+      else
+        driving_params_.push_back({ kRotateRight, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+    }
+    driving_params_.push_back({ kGoForward, 8, 0, { }, kDistanceEnd, kInvalidColor, 60 });
+    driving_params_.push_back({ kGoForward, 8, 0, { }, kDistanceEnd, kInvalidColor, 190 });
+
+    robot->direction = next_direction;
+    robot->circle = next_circle;
+    is_wayback_ = true;
+  }
 }
 
 bool ParamStore::GenerateParam() {
@@ -38,15 +112,24 @@ bool ParamStore::GenerateParam() {
       continue;
 
     Direction next_direction = bingo_area_->DirectionToGo(robot->circle, next_circle);
-    if (next_direction == kEast || next_direction == kNorth ||
-        next_direction == kWest || next_direction == kSouth) {
-      AddTraceParam(robot ,next_circle);
-    } else if (next_direction == kNorthEast || next_direction == kNorthWest ||
-               next_direction == kSouthWest || next_direction == kSouthEast) {
-      AddPlaceParam(robot ,next_circle);
+    switch (next_direction) {
+      case kEast:
+      case kNorth:
+      case kWest:
+      case kSouth:
+        AddTraceParam(robot, next_circle, next_direction);
+        break;
+
+      case kNorthEast:
+      case kNorthWest:
+      case kSouthWest:
+      case kSouthEast:
+        AddPlaceParam(robot, next_circle, next_direction);
+        break;
+
+      default:
+        break;
     }
-    robot->direction = next_direction;
-    robot->circle = next_circle;
   }
   return false;
 }
@@ -292,7 +375,8 @@ Block* BlockDecision::SelectBlackBlock() {
 }
 
 BingoAgent::BingoAgent(bool is_Rcourse)
-    : is_Rcourse_(is_Rcourse), curr_step_(kDecideCarryBlock), carry_block_(NULL) {
+    : calc_completed_(false), is_Rcourse_(is_Rcourse),
+      curr_step_(kDecideCarryBlock), carry_block_(NULL) {
   bingo_area_ = new BingoArea(is_Rcourse_);
   bingo_state_ = new BingoState(bingo_area_);
   block_decision_ = new BlockDecision(bingo_area_, bingo_state_);
@@ -337,6 +421,7 @@ void BingoAgent::TakeOneStep() {
       break;
 
     default:
+      calc_completed_ = true;
       break;
   }
 }

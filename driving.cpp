@@ -21,7 +21,7 @@ void WheelsControl::Exec(int8_t target_power_l, int8_t target_power_r) {
   }
 
   if (target_power_l == 0 && target_power_r == 0) {
-    motor_io_->StopWheels(false);
+    motor_io_->StopWheels(true);
   } else {
     motor_io_->SetWheelsPower(curr_power_l, curr_power_r);
   }
@@ -124,7 +124,9 @@ bool EndCondition::IsSatisfied() {
       break;
 
     case kDistanceEnd:
-      if (localize_->distance_ - ref_distance_ > end_threshold_)
+      if (end_threshold_ > 0 && localize_->distance_ - ref_distance_ > end_threshold_)
+        end_state_ = true;
+      else if (end_threshold_ < 0 && localize_->distance_ - ref_distance_ < end_threshold_)
         end_state_ = true;
       break;
 
