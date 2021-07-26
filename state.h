@@ -10,15 +10,6 @@ enum State {
   kStateNum
 };
 
-const int kLcourseParamsNum = 5;
-const DrivingParam kLcourseParams[kLcourseParamsNum] = {
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 6400 },
-  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kDistanceEnd, kInvalidColor, 800 },
-  { kGoForward, 10, 0, { }, kDistanceEnd, kInvalidColor, 300 },
-  { kTraceRightEdge, 30, 50, { 0.4, 0, 0.05 }, kColorEnd, kYellow, 0 },
-};
-
 class StateManager {
  public:
   StateManager(DrivingManager* driving_manager, BingoAgent* bingo_agent, bool is_Rcourse);

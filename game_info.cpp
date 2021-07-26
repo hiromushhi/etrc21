@@ -37,8 +37,35 @@ static const char* kLcourseCircleData[kCircleNum] = {
   "0,-9,-5,R",
 };
 
-static const char* kRcourseCircleData[] = {
-  "",
+static const char* kRcourseCircleData[kCircleNum] = {
+  "A,-6,6,B",
+  "B,-2,6,B",
+  "C,2,6,R",
+  "D,6,6,R",
+  "E,-6,2,B",
+  "F,-2,2,B",
+  "G,2,2,R",
+  "H,6,2,R",
+  "J,-6,-2,G",
+  "K,-2,-2,G",
+  "L,2,-2,Y",
+  "M,6,-2,Y",
+  "P,-6,-6,G",
+  "Q,-2,-6,G",
+  "R,2,-6,Y",
+  "S,6,-6,Y",
+  "W,9,-10,G",
+  "X,2,-10,Y",
+  "1,-4,4,R",
+  "2,0,4,G",
+  "3,4,4,Y",
+  "4,-4,0,Y",
+  "5,4,0,B",
+  "6,-4,-4,B",
+  "7,0,-4,R",
+  "8,4,-4,G",
+  "9,0,0,N",
+  "0,9,-5,R",
 };
 
 static const char* kBlockData[kBlockNum] = {
@@ -55,7 +82,7 @@ static const char* kBlockData[kBlockNum] = {
 
 static const char* kLcourseRobotPos = "X,4";
 
-static const char* kRcourseRobotPos = "";
+static const char* kRcourseRobotPos = "X,0";
 
 static const char* kPatternStrData[kPatternNum] = {
   "123",
