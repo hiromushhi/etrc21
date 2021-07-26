@@ -274,17 +274,17 @@ BlockDecision::BlockDecision(BingoArea* bingo_area, BingoState* bingo_state)
 Block* BlockDecision::NextCarryBlock() {
   Block* next_carry_block;
 
-  if (carried_blocks_num_ == 0) {
+  if (carried_blocks_num_ == 0)
     next_carry_block = Select1stBlock();
-  } else if (carried_blocks_num_ == 1) {
+  else if (carried_blocks_num_ == 1)
     next_carry_block = Select2ndBlock();
-  } else if (2 <= carried_blocks_num_ && carried_blocks_num_ <= 7) {
+  else if (2 <= carried_blocks_num_ && carried_blocks_num_ <= 7)
     next_carry_block = Select3rdTo8thBlock();
-  } else if (carried_blocks_num_ == 8) {
+  else if (carried_blocks_num_ == 8)
     next_carry_block = SelectBlackBlock();
-  } else {
+  else
     next_carry_block = NULL;
-  }
+
   ++carried_blocks_num_;
 
   return next_carry_block;
