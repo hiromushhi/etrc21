@@ -6,11 +6,21 @@
 
 #include <list>
 
+class ParamMaker {
+ public:
+  ParamMaker();
+  DrivingParam MakeForward(End end_type, Color end_color, float end_threshold);
+  DrivingParam MakeBackward(End end_type, Color end_color, float end_threshold);
+  DrivingParam MakeLineTrace(End end_type, Color end_color, float end_threshold);
+  DrivingParam MakeRotateLeft(double theta);
+  DrivingParam MakeRotateRight(double theta);
+};
+
 class RouteStore;
 
 class ParamStore {
  public:
-  ParamStore(BingoArea* bingo_area, RouteStore* route_store);
+  ParamStore(BingoArea* bingo_area, RouteStore* route_store, ParamMaker* param_maker);
   bool GenerateParam();
   std::list<DrivingParam> driving_params_;
 
@@ -20,6 +30,7 @@ class ParamStore {
   void AddPlaceParam(Robot* robot, Circle* next_circle, Direction next_direction);
   BingoArea* bingo_area_;
   RouteStore* route_store_;
+  ParamMaker* param_maker_;
   bool is_wayback_;
   bool is_wayback_after_;
 };
@@ -97,6 +108,7 @@ class BingoAgent {
   BingoState* bingo_state_;
   BlockDecision* block_decision_;
   RouteSearch* route_search_;
+  ParamMaker* param_maker_;
   RouteStore* route_store_;
 };
 

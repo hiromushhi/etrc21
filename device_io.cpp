@@ -1,9 +1,11 @@
 #include "device_io.h"
 
 MotorIo::MotorIo() : counts_l_(0), counts_r_(0), power_l_(0), power_r_(0) {
+  ev3_motor_config(EV3_PORT_A, LARGE_MOTOR);
   ev3_motor_config(EV3_PORT_B, LARGE_MOTOR);
   ev3_motor_config(EV3_PORT_C, LARGE_MOTOR);
   ResetCounts();
+  ev3_motor_stop(EV3_PORT_A, true);
 }
 
 MotorIo::~MotorIo() {
