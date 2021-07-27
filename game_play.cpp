@@ -99,9 +99,9 @@ void ParamStore::AddPlaceParam(Robot* robot, Circle* next_circle, Direction next
       double to = static_cast<int>(next_direction) * M_PI / 4;
       double dtheta = LimitRotationAngle(to - from);
       if (dtheta > 0)
-        driving_params_.push_back({ kRotateLeft, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+        driving_params_.push_back(param_maker_->MakeRotateLeft(dtheta));
       else
-        driving_params_.push_back({ kRotateRight, 8, 0, { }, kThetaEnd, kInvalidColor, static_cast<float>(dtheta*0.9) });
+        driving_params_.push_back(param_maker_->MakeRotateRight(dtheta));
     }
     driving_params_.push_back(param_maker_->MakeForward(kDistanceEnd, kInvalidColor, 100));
 
