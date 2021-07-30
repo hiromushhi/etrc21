@@ -360,6 +360,18 @@ Block* BlockDecision::Select3rdTo8thBlock() {
   Robot* robot = &bingo_area_->robot_;
   Block* third_to_eighth_block = NULL;
 
+  for (int i = 0; i < kBlockNum; ++i) {
+    Block* block = &bingo_area_->blocks_[i];
+    if (block->carrying_completed)
+      continue;
+
+    double d = bingo_area_->DistanceFromCenter(block->circle);
+    if (3 > d) {
+      third_to_eighth_block = block;
+      return third_to_eighth_block;
+    }
+  }
+
   double min = std::numeric_limits<double>::infinity();
   bingo_state_->Update();
 
